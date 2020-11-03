@@ -38,7 +38,7 @@
     <string name="error.category.already.exists">La catégorie existe déjà</string>
     <string name="error.category.in.use">La catégorie est liée à un ou plusieurs produits</string>
     <string name="error.loadingImage">Erreur de chargement de l\'image</string>
-    <string name="error.openingCamera">Erreur d'accès à l'appareil photo</string>
+    <string name="error.openingCamera">Erreur d\'accès à l\'appareil photo</string>
 
     <!-- CATEGORIES -->
 
