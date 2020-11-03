@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
-    package="com.mauriciotogneri.shoppinglist"
+    package="com.chakra.shoppinglist"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-feature
@@ -17,7 +17,7 @@
             android:required="false"/>
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.chakra.shoppinglist.MainActivity"
             android:launchMode="singleInstance">
 
             <intent-filter>

@@ -10,7 +10,7 @@ android
 
     defaultConfig
     {
-        applicationId 'com.mauriciotogneri.shoppinglist'
+        applicationId 'com.chakra.shoppinglist'
         minSdkVersion 16
         targetSdkVersion 27
         versionCode 13

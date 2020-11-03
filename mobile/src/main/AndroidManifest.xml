@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
-    package="com.mauriciotogneri.shoppinglist"
+    package="com.chakra.shoppinglist"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
-        android:name=".app.ShoppingList"
+        android:name="com.chakra.shoppinglist.app.ShoppingList"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/application.name"
@@ -20,7 +20,7 @@
         tools:replace="android:allowBackup">
 
         <activity
-            android:name=".activities.CartActivity"
+            android:name="com.chakra.shoppinglist.activities.CartActivity"
             android:screenOrientation="portrait">
 
             <intent-filter>
@@ -35,7 +35,7 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
 
                 <data
-                    android:host="mauriciotogneri.com"
+                    android:host="chakra.com"
                     android:pathPattern="/shoppinglist"
                     android:scheme="https"/>
 
@@ -44,24 +44,24 @@
         </activity>
 
         <activity
-            android:name=".activities.AddProductActivity"
+            android:name="com.chakra.shoppinglist.activities.AddProductActivity"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".activities.CreateProductActivity"
+            android:name="com.chakra.shoppinglist.activities.CreateProductActivity"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".activities.ManageCategoriesActivity"
+            android:name="com.chakra.shoppinglist.activities.ManageCategoriesActivity"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".activities.SearchImageActivity"
+            android:name="com.chakra.shoppinglist.activities.SearchImageActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible"/>
 
         <service
-            android:name=".utils.WearableService"
+            android:name="com.chakra.shoppinglist.utils.WearableService"
             android:enabled="true"
             android:exported="false"/>
 
@@ -79,14 +79,14 @@
 
         <meta-data
             android:name="DOMAIN_PACKAGE_NAME"
-            android:value="com.mauriciotogneri.shoppinglist"/>
+            android:value="com.chakra.shoppinglist"/>
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="8cffce1302373dfaa1df9a1eaa9097d3bf4520fc"/>
 
         <provider
-            android:name=".provider.LegacyCompatFileProvider"
+            android:name="com.chakra.shoppinglist.provider.LegacyCompatFileProvider"
             android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true">
