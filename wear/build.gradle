@@ -4,8 +4,8 @@ apply plugin: 'kotlin-android'
 
 android
 {
-    compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    compileSdkVersion 30
+    buildToolsVersion '30.0.2'
 
     defaultConfig
     {
@@ -68,7 +68,7 @@ dependencies
 {
     implementation project(':common')
 
-    implementation "com.android.support:wear:$support"
+    implementation 'androidx.wear:wear:1.0.0'
     implementation 'com.google.android.support:wearable:2.3.0'
 
     compileOnly 'com.google.android.wearable:wearable:2.3.0'

@@ -1,6 +1,5 @@
 package com.chakra.shoppinglist.views;
 
-import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -11,14 +10,15 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.bumptech.glide.Glide;
-import com.mauriciotogneri.androidutils.uibinder.annotations.BindView;
-import com.mauriciotogneri.androidutils.uibinder.annotations.OnClick;
 import com.chakra.shoppinglist.R;
 import com.chakra.shoppinglist.base.BaseView;
 import com.chakra.shoppinglist.model.Category;
 import com.chakra.shoppinglist.model.Product;
 import com.chakra.shoppinglist.views.CreateProductView.CreateProductViewObserver;
 import com.chakra.shoppinglist.views.CreateProductView.ViewContainer;
+import com.google.android.material.textfield.TextInputLayout;
+import com.mauriciotogneri.androidutils.uibinder.annotations.BindView;
+import com.mauriciotogneri.androidutils.uibinder.annotations.OnClick;
 
 import java.util.List;
 

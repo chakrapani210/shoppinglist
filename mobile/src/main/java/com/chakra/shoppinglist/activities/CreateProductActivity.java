@@ -5,13 +5,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.mauriciotogneri.androidutils.intents.Intents;
-import com.mauriciotogneri.androidutils.permissions.OnPermissionGranted;
-import com.mauriciotogneri.androidutils.permissions.Permissions;
-import com.mauriciotogneri.androidutils.permissions.PermissionsResult;
+import androidx.annotation.NonNull;
+
 import com.chakra.shoppinglist.R;
 import com.chakra.shoppinglist.base.BaseActivity;
 import com.chakra.shoppinglist.model.Category;
@@ -26,6 +23,10 @@ import com.chakra.shoppinglist.utils.ResourceUtils;
 import com.chakra.shoppinglist.views.CreateProductView;
 import com.chakra.shoppinglist.views.CreateProductView.CreateProductViewObserver;
 import com.chakra.shoppinglist.views.Dialogs;
+import com.mauriciotogneri.androidutils.intents.Intents;
+import com.mauriciotogneri.androidutils.permissions.OnPermissionGranted;
+import com.mauriciotogneri.androidutils.permissions.Permissions;
+import com.mauriciotogneri.androidutils.permissions.PermissionsResult;
 
 import java.io.File;
 import java.util.Arrays;
@@ -265,7 +266,7 @@ public class CreateProductActivity extends BaseActivity<CreateProductView> imple
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults)
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 

@@ -2,7 +2,7 @@ package com.chakra.shoppinglist.utils
 
 import android.content.Context
 import android.net.Uri
-import android.support.v4.content.FileProvider
+import androidx.core.content.FileProvider
 import com.chakra.shoppinglist.BuildConfig
 import java.io.File
 import java.io.FileOutputStream
@@ -17,7 +17,7 @@ object ResourceUtils {
 
     @JvmStatic
     @Throws(Exception::class)
-    fun fileFromUri(context: Context, uri: Uri?): File {
+    fun fileFromUri(context: Context, uri: Uri): File {
         val file = newFile(context.filesDir)
         val inputStream = context.contentResolver.openInputStream(uri)
         inputStream?.use { input ->

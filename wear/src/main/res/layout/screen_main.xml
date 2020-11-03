@@ -9,7 +9,7 @@
     app:layout_box="all"
     tools:deviceIds="wear_round">
 
-    <android.support.wear.widget.WearableRecyclerView
+    <androidx.wear.widget.WearableRecyclerView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

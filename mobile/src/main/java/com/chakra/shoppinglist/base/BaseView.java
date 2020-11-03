@@ -1,11 +1,6 @@
 package com.chakra.shoppinglist.base;
 
 import android.content.Context;
-import android.support.annotation.ColorRes;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.StringRes;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,6 +8,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.ColorRes;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.StringRes;
+import androidx.core.content.ContextCompat;
 
 import com.chakra.shoppinglist.R;
 import com.mauriciotogneri.androidutils.uibinder.UiBinder;

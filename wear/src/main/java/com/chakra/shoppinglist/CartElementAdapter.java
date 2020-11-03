@@ -1,12 +1,13 @@
 package com.chakra.shoppinglist;
 
 import android.graphics.Paint;
-import android.support.v4.content.ContextCompat;
-import android.support.wear.widget.WearableRecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
+import androidx.wear.widget.WearableRecyclerView;
 
 import com.chakra.common.api.CartElement;
 import com.chakra.shoppinglist.CartElementAdapter.ViewHolder;

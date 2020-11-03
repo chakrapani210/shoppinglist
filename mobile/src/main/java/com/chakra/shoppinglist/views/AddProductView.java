@@ -1,20 +1,21 @@
 package com.chakra.shoppinglist.views;
 
-import android.support.v4.app.FragmentManager;
-import android.support.v4.view.PagerTabStrip;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.TextUtils;
+
+import androidx.fragment.app.FragmentManager;
+import androidx.viewpager.widget.PagerTabStrip;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 
 import com.chakra.shoppinglist.R;
 import com.chakra.shoppinglist.adapters.ProductsFragmentAdapter;
-import com.chakra.shoppinglist.fragments.ProductsFragment;
-import com.mauriciotogneri.androidutils.uibinder.annotations.BindView;
-import com.mauriciotogneri.androidutils.uibinder.annotations.OnClick;
 import com.chakra.shoppinglist.base.BaseView;
+import com.chakra.shoppinglist.fragments.ProductsFragment;
 import com.chakra.shoppinglist.model.Category;
 import com.chakra.shoppinglist.views.AddProductView.AddProductViewObserver;
 import com.chakra.shoppinglist.views.AddProductView.ViewContainer;
+import com.mauriciotogneri.androidutils.uibinder.annotations.BindView;
+import com.mauriciotogneri.androidutils.uibinder.annotations.OnClick;
 
 import java.util.ArrayList;
 import java.util.List;

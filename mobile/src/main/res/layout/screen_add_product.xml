@@ -13,13 +13,13 @@
         android:layout_height="match_parent"
         android:background="@color/list.background">
 
-        <android.support.v4.view.ViewPager
+        <androidx.viewpager.widget.ViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/white">
 
-            <android.support.v4.view.PagerTabStrip
+            <androidx.viewpager.widget.PagerTabStrip
                 android:id="@+id/pager.header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -29,9 +29,9 @@
                 android:textColor="@color/text.color"
                 android:textSize="14sp"/>
 
-        </android.support.v4.view.ViewPager>
+        </androidx.viewpager.widget.ViewPager>
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/product.create"
             style="@style/floatingButton"
             android:layout_width="wrap_content"

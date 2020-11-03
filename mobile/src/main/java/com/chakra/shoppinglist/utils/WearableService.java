@@ -3,18 +3,19 @@ package com.chakra.shoppinglist.utils;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.chakra.common.api.CartElement;
 import com.chakra.common.message.Message;
+import com.chakra.shoppinglist.model.Product;
+import com.chakra.shoppinglist.tasks.product.LoadProductsInCart;
+import com.chakra.shoppinglist.tasks.product.UpdateProducts;
 import com.google.android.gms.wearable.MessageClient;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Wearable;
 import com.google.gson.Gson;
-import com.chakra.shoppinglist.model.Product;
-import com.chakra.shoppinglist.tasks.product.LoadProductsInCart;
-import com.chakra.shoppinglist.tasks.product.UpdateProducts;
 
 import java.util.ArrayList;
 import java.util.List;

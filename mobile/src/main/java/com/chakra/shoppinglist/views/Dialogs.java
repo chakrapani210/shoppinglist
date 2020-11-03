@@ -1,8 +1,6 @@
 package com.chakra.shoppinglist.views;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -14,6 +12,9 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 
 import com.chakra.shoppinglist.R;
 

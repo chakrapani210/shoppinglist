@@ -2,10 +2,11 @@ package com.chakra.shoppinglist;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.wear.widget.WearableRecyclerView;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.wear.widget.WearableRecyclerView;
 
 import com.chakra.common.api.CartElement;
 import com.chakra.common.message.Message;
