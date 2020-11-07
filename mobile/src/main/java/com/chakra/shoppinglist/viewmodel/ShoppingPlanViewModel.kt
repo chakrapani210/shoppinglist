@@ -12,8 +12,9 @@ import kotlinx.coroutines.launch
 class ShoppingPlanViewModel(application: Application,
                             private val repository: ShoppingPlanRepository) : AndroidViewModel(application) {
     val productsInPlan = MutableLiveData<List<Product>>()
+    lateinit var shoppingPlan: ShoppingPlan
 
-    private fun reloadProductsInPlan(shoppingPlan: ShoppingPlan? = null) {
+    fun reloadProductsInPlan(shoppingPlan: ShoppingPlan? = null) {
         viewModelScope.launch {
             productsInPlan.value = sortList(repository.productsInShoppingPlan())
         }
@@ -49,7 +50,7 @@ class ShoppingPlanViewModel(application: Application,
         }
     }
 
-    fun init(shoppingPlan: ShoppingPlan?) {
-        reloadProductsInPlan(shoppingPlan)
+    fun init(shoppingPlan: ShoppingPlan) {
+        this.shoppingPlan = shoppingPlan
     }
 }

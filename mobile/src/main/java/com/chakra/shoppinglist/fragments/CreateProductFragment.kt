@@ -2,7 +2,6 @@ package com.chakra.shoppinglist.fragments
 
 import android.Manifest.permission
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -42,11 +41,11 @@ class CreateProductFragment : BaseFragment() {
         private const val GALLERY_IMAGE_REQUEST_CODE = 2002
         private const val SEARCH_IMAGE_REQUEST_CODE = 2003
 
-        fun getDataBundle(context: Context?, product: Product?) = Bundle().apply {
+        fun getDataBundle(product: Product?) = Bundle().apply {
             putSerializable(PARAM_PRODUCT, product)
         }
 
-        fun getDataBundle(context: Context?, category: String?) = Bundle().apply {
+        fun getDataBundle(category: String?) = Bundle().apply {
             putString(PARAM_CATEGORY, category)
         }
     }
@@ -67,7 +66,7 @@ class CreateProductFragment : BaseFragment() {
         isCreateNew = arguments?.getSerializable(PARAM_PRODUCT) as Product? == null
     }
 
-    override fun getTitle(): String = if (true) {
+    override fun getTitle(): String = if (isCreateNew) {
         getString(R.string.toolbar_title_create_product)
     } else {
         getString(R.string.toolbar_title_edit_product)

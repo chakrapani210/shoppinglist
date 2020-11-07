@@ -1,8 +1,8 @@
 package com.chakra.shoppinglist.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
 import com.chakra.shoppinglist.R
 import com.chakra.shoppinglist.base.BaseFragment
@@ -30,8 +30,7 @@ class AddProductFragment : BaseFragment(), ViewPager.OnPageChangeListener {
         pagerHeader.tabIndicatorColor = requireContext().resources.getColor(R.color.primary)
 
         productCreate.setOnClickListener {
-            val intent: Intent = CreateProductActivity.intent(this, getCurrentCategory())
-            startActivity(intent)
+            findNavController().navigate(R.id.action_addProductScreen_to_createProductScreen)
         }
 
         viewModel.categoryList.observe(viewLifecycleOwner, {
@@ -39,6 +38,11 @@ class AddProductFragment : BaseFragment(), ViewPager.OnPageChangeListener {
                 updateTabList(it)
             }
         })
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.reloadCategories()
     }
 
     private fun updateTabList(categories: List<Category?>) {
@@ -72,8 +76,6 @@ class AddProductFragment : BaseFragment(), ViewPager.OnPageChangeListener {
 
     override fun onPageScrollStateChanged(state: Int) {
     }
-
-    private fun getCurrentCategory(): String {}
 
     private fun currentTitle(position: Int): String? {
         val adapter = pager.adapter as ProductsFragmentAdapter

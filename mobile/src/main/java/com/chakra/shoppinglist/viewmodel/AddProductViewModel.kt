@@ -12,10 +12,6 @@ open class AddProductViewModel(application: Application,
                                val repository: ShoppingPlanRepository) : AndroidViewModel(application) {
     val categoryList = MutableLiveData<List<Category?>?>()
 
-    init {
-        reloadCategories()
-    }
-
     fun reloadCategories() {
         viewModelScope.launch {
             categoryList.value = repository.getAllCategories()

@@ -7,7 +7,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
@@ -38,7 +39,7 @@ class ProductsFragment : BaseFragment() {
     }
 
     private lateinit var viewModel: ProductsViewModel
-    private lateinit var adapter: PlanListAdapter
+    private lateinit var adapter: ProductsAdapter
 
     override val resourceLayoutId: Int
         get() = R.layout.fragment_view_category_products
@@ -51,17 +52,22 @@ class ProductsFragment : BaseFragment() {
     }
 
     override fun initialize() {
-        val layoutManager = GridLayoutManager(context, 2)
+        val layoutManager = LinearLayoutManager(context)
+        layoutManager.orientation = LinearLayoutManager.VERTICAL
         planList.layoutManager = layoutManager
-        adapter = PlanListAdapter()
+        adapter = ProductsAdapter()
         planList.adapter = adapter
 
-        viewModel.reloadProducts(arguments?.getString(PARAM_CATEGORY, "") ?: "")
         viewModel.productsLiveData.observe(viewLifecycleOwner, { list: List<Product>? ->
             list?.let {
                 adapter.setList(it)
             }
         })
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.reloadProducts(arguments?.getString(PARAM_CATEGORY, "") ?: "")
     }
 
     override fun getTitle(): String = arguments?.getString(PARAM_CATEGORY, "") ?: ""
@@ -92,20 +98,22 @@ class ProductsFragment : BaseFragment() {
     }
 
     private fun editProduct(product: Product) {
-        val intent = CreateProductActivity.intent(context, product)
-        startActivity(intent)
+        findNavController().navigate(R.id.action_productsFragment_to_createProductScreen,
+                CreateProductFragment.getDataBundle(product))
     }
 
     private fun confirmRemoveProduct(product: Product) {
         val dialogs = Dialogs(context)
-        dialogs.confirmation(product.name(), getString(R.string.dialog_remove_product)) { removeProduct(product) }
+        dialogs.confirmation(product.name(), getString(R.string.dialog_remove_product)) {
+            removeProduct(product)
+        }
     }
 
     private fun removeProduct(product: Product) {
         viewModel.deleteProduct(product)
     }
 
-    inner class PlanListAdapter : RecyclerView.Adapter<ViewHolder>() {
+    inner class ProductsAdapter : RecyclerView.Adapter<ViewHolder>() {
         private var imageLoader: RequestManager = Glide.with(context!!)
 
         private var prodcutList: List<Product>? = null
@@ -132,6 +140,7 @@ class ProductsFragment : BaseFragment() {
         var options: View? = view.findViewById(R.id.product_options)
 
         fun bind(product: Product, imageLoader: RequestManager) {
+            onProductSelected(product)
             name!!.text = product.name()
             imageLoader.load(product.image()).into(image!!)
             options!!.setOnClickListener { v: View? -> onProductsOptions(product) }

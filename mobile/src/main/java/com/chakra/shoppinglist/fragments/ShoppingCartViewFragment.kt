@@ -47,6 +47,11 @@ class ShoppingCartViewFragment : BaseFragment() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        viewModel.reloadProductsInPlan()
+    }
+
     override fun initialize() {
         val analytics = Analytics(requireContext())
         analytics.appLaunched()

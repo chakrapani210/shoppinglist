@@ -32,8 +32,8 @@
         android:label="Blank"
         tools:layout="@layout/screen_add_product">
         <action
-            android:id="@+id/action_addProductScreen_to_productsFragment"
-            app:destination="@id/productsFragment" />
+            android:id="@+id/action_addProductScreen_to_createProductScreen"
+            app:destination="@id/createProductScreen" />
     </fragment>
 
     <fragment

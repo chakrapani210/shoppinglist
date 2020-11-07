@@ -75,4 +75,32 @@ class ShoppingPlanRepository @Inject constructor(private val productDao: Product
         }
         return false
     }
+
+    /**
+     * Category
+     */
+    fun addCategory(category: Category): Boolean {
+        if (!categoryDao.contains(category.name())) {
+            categoryDao.insert(category)
+            return true
+        }
+        return false
+    }
+
+    fun renameCategory(category: Category, newName: String): Boolean {
+        if (!categoryDao.contains(newName)) {
+            categoryDao.rename(category.name(), newName)
+            productDao.updateCategory(category.name(), newName)
+            return true
+        }
+        return false
+    }
+
+    fun deleteCategory(category: Category): Boolean {
+        if (!productDao.containsWithCategory(category.name())) {
+            categoryDao.delete(category)
+            return true
+        }
+        return false
+    }
 }
