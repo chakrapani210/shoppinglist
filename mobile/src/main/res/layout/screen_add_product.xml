@@ -20,7 +20,7 @@
             android:background="@android:color/white">
 
             <androidx.viewpager.widget.PagerTabStrip
-                android:id="@+id/pager.header"
+                android:id="@+id/pagerHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top"
@@ -32,7 +32,7 @@
         </androidx.viewpager.widget.ViewPager>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/product.create"
+            android:id="@+id/productCreate"
             style="@style/floatingButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

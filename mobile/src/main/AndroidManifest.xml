@@ -20,38 +20,6 @@
         tools:replace="android:allowBackup">
 
         <activity
-            android:name="com.chakra.shoppinglist.activities.CartActivity"
-            android:screenOrientation="portrait">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-
-                <data
-                    android:host="chakra.com"
-                    android:pathPattern="/shoppinglist"
-                    android:scheme="https"/>
-
-            </intent-filter>
-
-        </activity>
-
-        <activity
-            android:name="com.chakra.shoppinglist.activities.AddProductActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity
-            android:name="com.chakra.shoppinglist.activities.CreateProductActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity
             android:name="com.chakra.shoppinglist.activities.ManageCategoriesActivity"
             android:screenOrientation="portrait"/>
 

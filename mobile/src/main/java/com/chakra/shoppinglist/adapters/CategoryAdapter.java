@@ -4,12 +4,10 @@ import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 
-import com.mauriciotogneri.androidutils.uibinder.annotations.BindView;
 import com.chakra.shoppinglist.R;
 import com.chakra.shoppinglist.adapters.CategoryAdapter.ViewHolder;
-import com.chakra.shoppinglist.base.BaseListAdapter;
-import com.chakra.shoppinglist.base.BaseViewHolder;
 import com.chakra.shoppinglist.model.Category;
+import com.mauriciotogneri.androidutils.uibinder.annotations.BindView;
 
 public class CategoryAdapter extends BaseListAdapter<Category, ViewHolder>
 {

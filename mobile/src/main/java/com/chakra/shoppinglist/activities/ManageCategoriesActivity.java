@@ -7,8 +7,6 @@ import com.chakra.shoppinglist.tasks.category.AddCategory;
 import com.chakra.shoppinglist.tasks.category.AddCategory.OnCategoryAdded;
 import com.chakra.shoppinglist.tasks.category.DeleteCategory;
 import com.chakra.shoppinglist.tasks.category.DeleteCategory.OnCategoryDeleted;
-import com.chakra.shoppinglist.tasks.category.LoadCategories;
-import com.chakra.shoppinglist.tasks.category.LoadCategories.OnCategoriesLoaded;
 import com.chakra.shoppinglist.tasks.category.RenameCategory;
 import com.chakra.shoppinglist.tasks.category.RenameCategory.OnCategoryRenamed;
 import com.chakra.shoppinglist.views.Dialogs;

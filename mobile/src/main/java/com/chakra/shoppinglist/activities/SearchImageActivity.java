@@ -13,13 +13,11 @@ import com.chakra.shoppinglist.views.SearchImageView.SearchImageViewObserver;
 
 import java.util.List;
 
-public class SearchImageActivity extends BaseActivity<SearchImageView> implements SearchImageViewObserver, OnImagesLoaded
-{
+public class SearchImageActivity extends BaseActivity implements SearchImageViewObserver, OnImagesLoaded {
     public static final String PARAM_INITIAL_QUERY = "initial.query";
     public static final String PARAM_IMAGE_URL = "image.url";
 
-    public static Intent intent(Context context, String initialQuery)
-    {
+    public static Intent intent(Context context, String initialQuery) {
         Intent intent = new Intent(context, SearchImageActivity.class);
         intent.putExtra(PARAM_INITIAL_QUERY, initialQuery);
 

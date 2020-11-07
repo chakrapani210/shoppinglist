@@ -4,14 +4,13 @@ import android.content.Context;
 import android.view.View;
 import android.widget.ListView;
 
-import com.chakra.shoppinglist.adapters.CategoryAdapter;
-import com.mauriciotogneri.androidutils.uibinder.annotations.BindView;
-import com.mauriciotogneri.androidutils.uibinder.annotations.OnClick;
 import com.chakra.shoppinglist.R;
-import com.chakra.shoppinglist.base.BaseView;
+import com.chakra.shoppinglist.adapters.CategoryAdapter;
 import com.chakra.shoppinglist.model.Category;
 import com.chakra.shoppinglist.views.ManageCategoriesView.ManageCategoriesViewObserver;
 import com.chakra.shoppinglist.views.ManageCategoriesView.ViewContainer;
+import com.mauriciotogneri.androidutils.uibinder.annotations.BindView;
+import com.mauriciotogneri.androidutils.uibinder.annotations.OnClick;
 
 import java.util.List;
 

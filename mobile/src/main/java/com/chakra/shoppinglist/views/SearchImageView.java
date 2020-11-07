@@ -10,12 +10,11 @@ import android.widget.GridView;
 
 import com.chakra.shoppinglist.R;
 import com.chakra.shoppinglist.adapters.SearchImageAdapter;
+import com.chakra.shoppinglist.views.SearchImageView.SearchImageViewObserver;
+import com.chakra.shoppinglist.views.SearchImageView.ViewContainer;
 import com.mauriciotogneri.androidutils.Keyboard;
 import com.mauriciotogneri.androidutils.uibinder.annotations.BindView;
 import com.mauriciotogneri.androidutils.uibinder.annotations.OnClick;
-import com.chakra.shoppinglist.base.BaseView;
-import com.chakra.shoppinglist.views.SearchImageView.SearchImageViewObserver;
-import com.chakra.shoppinglist.views.SearchImageView.ViewContainer;
 
 import java.util.List;
 
