@@ -10,8 +10,6 @@ import androidx.annotation.Nullable;
 import com.chakra.common.api.CartElement;
 import com.chakra.common.message.Message;
 import com.chakra.shoppinglist.model.Product;
-import com.chakra.shoppinglist.tasks.product.LoadProductsInCart;
-import com.chakra.shoppinglist.tasks.product.UpdateProducts;
 import com.google.android.gms.wearable.MessageClient;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Wearable;

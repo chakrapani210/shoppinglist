@@ -2,6 +2,7 @@ package com.chakra.shoppinglist.utils
 
 import android.content.Context
 import android.net.Uri
+import android.util.DisplayMetrics
 import androidx.core.content.FileProvider
 import com.chakra.shoppinglist.BuildConfig
 import java.io.File
@@ -42,5 +43,9 @@ object ResourceUtils {
     @Throws(Exception::class)
     private fun newFile(parent: File): File {
         return File.createTempFile("image", "", parent)
+    }
+
+    fun getDisplayMetrics(context: Context): DisplayMetrics {
+        return context.resources.displayMetrics
     }
 }

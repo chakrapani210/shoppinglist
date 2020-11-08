@@ -13,11 +13,11 @@
         android:layout_height="match_parent"
         android:background="@color/list.background">
 
-        <ListView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/product.list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:divider="@null"/>
+            android:divider="@null" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/product.add"

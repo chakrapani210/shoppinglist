@@ -14,17 +14,17 @@
         android:layout_height="match_parent"
         android:background="@color/list.background">
 
-        <ListView
-            android:id="@+id/category.list"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/categoryList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
             android:divider="@null"
             android:visibility="gone"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/category.add"
+            android:id="@+id/categoryAdd"
             style="@style/floatingButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
             android:src="@drawable/ic_plus"/>
 
         <TextView
-            android:id="@+id/label.empty"
+            android:id="@+id/labelEmpty"
             style="@style/labelEmpty"/>
 
     </FrameLayout>

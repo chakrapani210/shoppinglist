@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/planListScreen">
+    <fragment
+        android:id="@+id/planListScreen"
+        android:name="com.chakra.shoppinglist.fragments.PlanListFragment"
+        android:label="Blank"
+        tools:layout="@layout/fragment_planner_list_layout">
+        <action
+            android:id="@+id/action_planListScreen_to_addPlanScreen"
+            app:destination="@id/addPlanScreen" />
+        <action
+            android:id="@+id/action_planListScreen_to_shoppingCartViewScreen"
+            app:destination="@id/shoppingCartViewScreen" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addPlanScreen"
+        android:name="com.chakra.shoppinglist.fragments.AddPlanFragment"
+        android:label="Blank"
+        tools:layout="@layout/fragment_add_plan_layout">
+        <action
+            android:id="@+id/action_addPlanScreen_to_shoppingCartViewScreen"
+            app:destination="@id/shoppingCartViewScreen" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addProductScreen"
+        android:name="com.chakra.shoppinglist.fragments.AddProductFragment"
+        android:label="Blank"
+        tools:layout="@layout/screen_add_product">
+        <action
+            android:id="@+id/action_addProductScreen_to_createProductScreen"
+            app:destination="@id/createProductScreen" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/createProductScreen"
+        android:name="com.chakra.shoppinglist.fragments.CreateProductFragment"
+        android:label="Blank"
+        tools:layout="@layout/screen_create_product">
+        <action
+            android:id="@+id/action_createProductScreen_to_manageCategoriesScreen"
+            app:destination="@id/manageCategoriesScreen" />
+        <action
+            android:id="@+id/action_createProductScreen_to_searchImageScreen"
+            app:destination="@id/searchImageScreen" />
+    </fragment>
+    <fragment
+        android:id="@+id/productsFragment"
+        android:name="com.chakra.shoppinglist.fragments.ProductsFragment"
+        android:label="Blank"
+        tools:layout="@layout/fragment_view_category_products">
+        <action
+            android:id="@+id/action_productsFragment_to_createProductScreen"
+            app:destination="@id/createProductScreen" />
+    </fragment>
+    <fragment
+        android:id="@+id/shoppingCartViewScreen"
+        android:name="com.chakra.shoppinglist.fragments.ShoppingCartViewFragment"
+        android:label="Blank"
+        tools:layout="@layout/screen_cart">
+        <action
+            android:id="@+id/action_shoppingCartViewScreen_to_addProductScreen"
+            app:destination="@id/addProductScreen" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/searchImageScreen"
+        android:name="com.chakra.shoppinglist.fragments.SearchImageFragment"
+        android:label="Blank"
+        tools:layout="@layout/screen_search_image"></fragment>
+
+    <fragment
+        android:id="@+id/manageCategoriesScreen"
+        android:name="com.chakra.shoppinglist.fragments.ManageCategoriesFragment"
+        android:label="Blank"
+        tools:layout="@layout/screen_manage_categories"></fragment>
+</navigation>
