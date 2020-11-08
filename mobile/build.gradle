@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
-apply plugin: 'io.fabric'
+apply plugin: 'kotlin-android-extensions'
 
 android
 {
@@ -11,7 +10,7 @@ android
     defaultConfig
     {
         applicationId 'com.chakra.shoppinglist'
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 27
         versionCode 13
         versionName '2.1.0'
@@ -74,6 +73,33 @@ dependencies
     implementation project(':common')
     wearApp project(':wear')
 
+    def nav_version = "2.3.1"
+
+    implementation "androidx.core:core-ktx:1.3.2"
+    implementation "androidx.collection:collection-ktx:1.1.0"
+    implementation "androidx.fragment:fragment-ktx:1.2.5"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
+
+    //implementation "androidx.navigation:navigation-runtime-ktx::$nav_version"
+
+    // Java language implementation
+    implementation "androidx.navigation:navigation-fragment:$nav_version"
+    implementation "androidx.navigation:navigation-ui:$nav_version"
+
+    // Kotlin
+    /*implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"*/
+
+    // Feature module Support
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
+
+    // Testing Navigation
+    androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
+
+    // Jetpack Compose Integration
+    implementation "androidx.navigation:navigation-compose:1.0.0-alpha01"
+
     // okhttp
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
 
@@ -87,15 +113,28 @@ dependencies
     implementation 'com.github.satyan:sugar:1.3.1'
 
     // google analytics
-    implementation 'com.google.android.gms:play-services-analytics:16.0.3'
+    // Stable Koin Version
+    def koin_version = "2.1.6"
 
-    // crashlytics
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.5'
+    // Koin for Kotlin
+    implementation "org.koin:koin-core:$koin_version"
+    // Koin for Android
+    implementation "org.koin:koin-android:$koin_version"
+    // or Koin for Lifecycle scoping
+    implementation "org.koin:koin-androidx-scope:$koin_version"
+    // or Koin for Android Architecture ViewModel
+    implementation "org.koin:koin-androidx-viewmodel:$koin_version"
+    // or Koin for Android Fragment Factory (unstable version)
+    implementation "org.koin:koin-androidx-fragment:$koin_version"
 
     // room
+    implementation "androidx.room:room-ktx:2.2.5"
     implementation 'androidx.room:room-runtime:2.0.0'
     annotationProcessor 'androidx.room:room-compiler:2.0.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "androidx.sqlite:sqlite-ktx:2.1.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+    implementation "androidx.work:work-runtime-ktx:2.4.0"
 }
 repositories {
     maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }

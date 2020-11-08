@@ -2,30 +2,20 @@ package com.chakra.shoppinglist.utils;
 
 import android.content.Context;
 
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.HitBuilders.EventBuilder;
-import com.google.android.gms.analytics.Tracker;
-import com.chakra.shoppinglist.R;
 import com.chakra.shoppinglist.model.Product;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 public class Analytics
 {
-    private final Tracker tracker;
+   // private final Tracker tracker;
 
-    public Analytics(Context context)
-    {
-        GoogleAnalytics googleAnalytics = GoogleAnalytics.getInstance(context);
-        this.tracker = googleAnalytics.newTracker(R.xml.app_tracker);
+    public Analytics(Context context) {
+        /*GoogleAnalytics googleAnalytics = GoogleAnalytics.getInstance(context);
+        this.tracker = googleAnalytics.newTracker(R.xml.app_tracker);*/
     }
 
     public void appLaunched()
     {
-        tracker.setScreenName("App Launched");
+        /*tracker.setScreenName("App Launched");
         tracker.send(new HitBuilders.ScreenViewBuilder().build());
 
         Date date = new Date();
@@ -36,14 +26,14 @@ public class Analytics
         EventBuilder eventBuilder = new EventBuilder();
         eventBuilder.setCategory("TIME_APP_OPEN");
         eventBuilder.setAction(String.valueOf(hour));
-        tracker.send(eventBuilder.build());
+        tracker.send(eventBuilder.build());*/
     }
 
     public void cartItemAdded(Product product)
     {
-        EventBuilder eventBuilder = new EventBuilder();
+        /*EventBuilder eventBuilder = new EventBuilder();
         eventBuilder.setCategory("ADDED_PRODUCT_TO_CART");
         eventBuilder.setAction(product.category());
-        tracker.send(eventBuilder.build());
+        tracker.send(eventBuilder.build());*/
     }
 }

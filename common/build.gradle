@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android
 {
@@ -9,7 +9,7 @@ android
 
     defaultConfig
     {
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 27
         versionCode 13
         versionName '2.1.0'
