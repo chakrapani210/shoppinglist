@@ -1,6 +1,5 @@
 package com.chakra.shoppinglist.fragments
 
-import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
@@ -11,7 +10,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,20 +19,16 @@ import com.chakra.shoppinglist.model.ShoppingPlanType
 import com.chakra.shoppinglist.viewmodel.PlanTypeListViewModel
 import kotlinx.android.synthetic.main.fragment_add_plan_layout.*
 import kotlinx.android.synthetic.main.fragment_planner_list_layout.planList
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AddPlanFragment : BaseFragment() {
     override val resourceLayoutId: Int
         get() = R.layout.fragment_add_plan_layout
 
-    private lateinit var viewModel: PlanTypeListViewModel
+    private val viewModel: PlanTypeListViewModel by viewModel()
     private lateinit var adapter: PlanTypeListAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(viewModelStore,
-                ViewModelProvider.AndroidViewModelFactory(requireActivity().application))
-                .get(PlanTypeListViewModel::class.java)
-    }
+    override fun getBaseViewModel() = viewModel
 
     override fun initialize() {
         val layoutManager = GridLayoutManager(context, 2)
@@ -99,7 +93,8 @@ class AddPlanFragment : BaseFragment() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(LayoutInflater.from(context).inflate(R.layout.layout_shopping_plan_add_list_item, parent, false))
+            return ViewHolder(LayoutInflater.from(context)
+                    .inflate(R.layout.layout_shopping_plan_add_list_item, parent, false))
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {

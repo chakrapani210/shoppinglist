@@ -10,7 +10,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ShoppingPlanRepository @Inject constructor(private val productDao: ProductDao, private val categoryDao: CategoryDao) {
+class ShoppingPlanRepository @Inject constructor(private val imageService: SearchImageService,
+                                                 private val productDao: ProductDao,
+                                                 private val categoryDao: CategoryDao) {
+
     fun getShoppingPlanList(): List<ShoppingPlan>? {
         return listOf(ShoppingPlan("Birth Day", ShoppingPlanType.BIRTHDAY_PARTY))
     }
@@ -19,12 +22,11 @@ class ShoppingPlanRepository @Inject constructor(private val productDao: Product
         return ShoppingPlanType.values().asList()
     }
 
-    fun getProductList(category: String): MutableList<Product>? {
+    fun getProductList(category: String): List<Product>? {
         val productList = productDao.byCategory(category, false)
-        productList.sortWith { p1: Product, p2: Product ->
+        return productList?.sortedWith { p1: Product, p2: Product ->
             p1.name().compareTo(p2.name())
         }
-        return productList
     }
 
     fun getProductByNameList(name: String) = productDao.byName(name)
@@ -33,7 +35,23 @@ class ShoppingPlanRepository @Inject constructor(private val productDao: Product
         productDao.delete(product)
     }
 
-    fun productsInShoppingPlan() = productDao.inCart()
+    fun productsInShoppingPlan() = sortList(productDao.inCart())
+
+    private fun sortList(list: List<Product>?): List<Product>? {
+        return list?.sortedWith { p1: Product, p2: Product ->
+            if (!p1.isSelected && p2.isSelected) {
+                return@sortedWith -1
+            } else if (p1.isSelected && !p2.isSelected) {
+                return@sortedWith 1
+            } else {
+                if (p1.category != p2.category) {
+                    return@sortedWith p1.category().compareTo(p2.category())
+                } else {
+                    return@sortedWith p1.name().compareTo(p2.name())
+                }
+            }
+        }
+    }
 
     fun setSelection(product: Product) {
         productDao.setSelection(product.id(), product.isSelected)
@@ -53,9 +71,9 @@ class ShoppingPlanRepository @Inject constructor(private val productDao: Product
         }
     }
 
-    fun getAllCategories(): List<Category?> {
+    fun getAllCategories(): List<Category>? {
         var categories = categoryDao.all()
-        return categories.sortedWith { c1: Category, c2: Category -> c1.name().compareTo(c2.name()) }
+        return categories?.sortedWith { c1: Category, c2: Category -> c1.name().compareTo(c2.name()) }
     }
 
     fun createProduct(newProduct: Product): Boolean {
@@ -67,7 +85,7 @@ class ShoppingPlanRepository @Inject constructor(private val productDao: Product
     }
 
     fun updateProduct(oldProduct: Product, newProduct: Product): Boolean {
-        val product: Product = productDao.byName(newProduct.name())
+        val product: Product? = productDao.byName(newProduct.name())
 
         if (product == null || product.id() == oldProduct.id()) {
             productDao.update(oldProduct.id(), newProduct.name(), newProduct.category(), newProduct.image())
@@ -103,4 +121,7 @@ class ShoppingPlanRepository @Inject constructor(private val productDao: Product
         }
         return false
     }
+
+    // Image Search
+    fun searchImage(query: String) = imageService.searchImages(query)
 }

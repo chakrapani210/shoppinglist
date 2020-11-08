@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +18,7 @@ import com.chakra.shoppinglist.utils.Analytics
 import com.chakra.shoppinglist.viewmodel.ProductsViewModel
 import com.chakra.shoppinglist.views.Dialogs
 import kotlinx.android.synthetic.main.fragment_planner_list_layout.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 class ProductsFragment : BaseFragment() {
@@ -38,18 +38,13 @@ class ProductsFragment : BaseFragment() {
         }
     }
 
-    private lateinit var viewModel: ProductsViewModel
+    private val viewModel: ProductsViewModel by viewModel()
     private lateinit var adapter: ProductsAdapter
 
     override val resourceLayoutId: Int
         get() = R.layout.fragment_view_category_products
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(viewModelStore,
-                ViewModelProvider.AndroidViewModelFactory(requireActivity().application))
-                .get(ProductsViewModel::class.java)
-    }
+    override fun getBaseViewModel() = viewModel
 
     override fun initialize() {
         val layoutManager = LinearLayoutManager(context)
@@ -116,10 +111,10 @@ class ProductsFragment : BaseFragment() {
     inner class ProductsAdapter : RecyclerView.Adapter<ViewHolder>() {
         private var imageLoader: RequestManager = Glide.with(context!!)
 
-        private var prodcutList: List<Product>? = null
+        private var productList: List<Product>? = null
 
         fun setList(list: List<Product>?) {
-            this.prodcutList = list
+            this.productList = list
             notifyDataSetChanged()
         }
 
@@ -128,10 +123,10 @@ class ProductsFragment : BaseFragment() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.bind(prodcutList!![position], imageLoader)
+            holder.bind(productList!![position], imageLoader)
         }
 
-        override fun getItemCount() = prodcutList?.size ?: 0
+        override fun getItemCount() = productList?.size ?: 0
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {

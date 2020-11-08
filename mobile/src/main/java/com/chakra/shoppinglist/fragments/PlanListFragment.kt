@@ -1,7 +1,6 @@
 package com.chakra.shoppinglist.fragments
 
 import android.content.Intent
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +8,6 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,17 +18,14 @@ import com.chakra.shoppinglist.model.ShoppingPlanStatus
 import com.chakra.shoppinglist.utils.WearableService
 import com.chakra.shoppinglist.viewmodel.PlanListViewModel
 import kotlinx.android.synthetic.main.fragment_planner_list_layout.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlanListFragment : BaseFragment() {
-    private lateinit var viewModel: PlanListViewModel
+    private val viewModel: PlanListViewModel by viewModel()
     private lateinit var adapter: PlanListAdapter
     override val resourceLayoutId: Int = R.layout.fragment_planner_list_layout
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(viewModelStore,
-                ViewModelProvider.AndroidViewModelFactory(requireActivity().application))
-                .get(PlanListViewModel::class.java)
-    }
+
+    override fun getBaseViewModel() = viewModel
 
     override fun initialize() {
         // Start wearable service

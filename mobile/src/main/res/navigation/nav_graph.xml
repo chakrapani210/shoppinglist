@@ -40,7 +40,14 @@
         android:id="@+id/createProductScreen"
         android:name="com.chakra.shoppinglist.fragments.CreateProductFragment"
         android:label="Blank"
-        tools:layout="@layout/screen_create_product" />
+        tools:layout="@layout/screen_create_product">
+        <action
+            android:id="@+id/action_createProductScreen_to_manageCategoriesScreen"
+            app:destination="@id/manageCategoriesScreen" />
+        <action
+            android:id="@+id/action_createProductScreen_to_searchImageScreen"
+            app:destination="@id/searchImageScreen" />
+    </fragment>
     <fragment
         android:id="@+id/productsFragment"
         android:name="com.chakra.shoppinglist.fragments.ProductsFragment"
@@ -59,4 +66,16 @@
             android:id="@+id/action_shoppingCartViewScreen_to_addProductScreen"
             app:destination="@id/addProductScreen" />
     </fragment>
+
+    <fragment
+        android:id="@+id/searchImageScreen"
+        android:name="com.chakra.shoppinglist.fragments.SearchImageFragment"
+        android:label="Blank"
+        tools:layout="@layout/screen_search_image"></fragment>
+
+    <fragment
+        android:id="@+id/manageCategoriesScreen"
+        android:name="com.chakra.shoppinglist.fragments.ManageCategoriesFragment"
+        android:label="Blank"
+        tools:layout="@layout/screen_manage_categories"></fragment>
 </navigation>

@@ -1,7 +1,6 @@
 package com.chakra.shoppinglist.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.chakra.shoppinglist.data.ShoppingPlanRepository
@@ -9,7 +8,7 @@ import com.chakra.shoppinglist.model.Product
 import kotlinx.coroutines.launch
 
 class ProductsViewModel(application: Application,
-                        private val repository: ShoppingPlanRepository) : AndroidViewModel(application) {
+                        repository: ShoppingPlanRepository) : BaseViewModel(application, repository) {
     val productsLiveData = MutableLiveData<List<Product>?>()
     private var category: String? = null
 

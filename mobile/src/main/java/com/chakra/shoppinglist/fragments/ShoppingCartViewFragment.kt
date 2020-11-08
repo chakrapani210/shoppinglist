@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +21,7 @@ import com.chakra.shoppinglist.model.ShoppingPlan
 import com.chakra.shoppinglist.utils.Analytics
 import com.chakra.shoppinglist.viewmodel.ShoppingPlanViewModel
 import kotlinx.android.synthetic.main.screen_cart.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ShoppingCartViewFragment : BaseFragment() {
     companion object {
@@ -31,7 +31,7 @@ class ShoppingCartViewFragment : BaseFragment() {
         }
     }
 
-    private lateinit var viewModel: ShoppingPlanViewModel
+    private val viewModel: ShoppingPlanViewModel by viewModel()
     override val resourceLayoutId: Int
         get() = R.layout.screen_cart
 
@@ -39,13 +39,13 @@ class ShoppingCartViewFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(viewModelStore,
-                ViewModelProvider.AndroidViewModelFactory(requireActivity().application))
-                .get(ShoppingPlanViewModel::class.java)
+
         if (savedInstanceState == null) {
             viewModel.init(arguments?.getSerializable(EXTRA_SHOPPING_PLAN) as ShoppingPlan)
         }
     }
+
+    override fun getBaseViewModel() = viewModel
 
     override fun onStart() {
         super.onStart()

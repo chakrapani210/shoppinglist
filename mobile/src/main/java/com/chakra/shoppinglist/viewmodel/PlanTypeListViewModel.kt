@@ -1,7 +1,6 @@
 package com.chakra.shoppinglist.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.chakra.shoppinglist.data.ShoppingPlanRepository
@@ -9,8 +8,8 @@ import com.chakra.shoppinglist.model.ShoppingPlan
 import com.chakra.shoppinglist.model.ShoppingPlanType
 import kotlinx.coroutines.launch
 
-class PlanTypeListViewModel(private val repository: ShoppingPlanRepository,
-                            application: Application) : AndroidViewModel(application) {
+class PlanTypeListViewModel(repository: ShoppingPlanRepository,
+                            application: Application) : BaseViewModel(application, repository) {
     private var originalList: List<ShoppingPlanType>? = null
     val shoppingTypeSuggestions = MutableLiveData<List<ShoppingPlanType>?>()
     val shoppingPlanAddedLiveData = MutableLiveData<ShoppingPlan>()

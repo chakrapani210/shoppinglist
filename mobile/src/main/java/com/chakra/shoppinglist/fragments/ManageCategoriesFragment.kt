@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chakra.shoppinglist.R
@@ -15,11 +14,12 @@ import com.chakra.shoppinglist.viewmodel.ManageCategoriesViewModel
 import com.chakra.shoppinglist.views.Dialogs
 import com.chakra.shoppinglist.views.Dialogs.OnInputConfirmed
 import kotlinx.android.synthetic.main.screen_manage_categories.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 class ManageCategoriesFragment : BaseFragment() {
     private lateinit var adapter: CategoriesAdapter
-    private lateinit var viewModel: ManageCategoriesViewModel
+    private val viewModel: ManageCategoriesViewModel by viewModel()
 
     override fun getTitle() = getString(R.string.toolbar_title_manage_categories)
 
@@ -27,13 +27,13 @@ class ManageCategoriesFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(viewModelStore,
-                ViewModelProvider.AndroidViewModelFactory(requireActivity().application))
-                .get(ManageCategoriesViewModel::class.java)
+
         if (savedInstanceState == null) {
             viewModel.reloadCategories()
         }
     }
+
+    override fun getBaseViewModel() = viewModel
 
     override fun initialize() {
         val layoutManager = LinearLayoutManager(context)
@@ -58,7 +58,6 @@ class ManageCategoriesFragment : BaseFragment() {
         }
     }
 
-
     inner class CategoriesAdapter : RecyclerView.Adapter<ViewHolder>() {
         private var categories: List<Category>? = null
 
@@ -79,7 +78,7 @@ class ManageCategoriesFragment : BaseFragment() {
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var name: TextView? = view.findViewById(R.id.category_name)
+        var name: TextView? = view.findViewById(R.id.categoryName)
 
         fun bind(category: Category) {
             name!!.text = category.name()
@@ -96,7 +95,7 @@ class ManageCategoriesFragment : BaseFragment() {
                 getString(R.string.button_remove)
         )
 
-        val dialogs = Dialogs(this)
+        val dialogs = Dialogs(requireContext())
         dialogs.options(category.name(), options) { option: Int ->
             if (option == 0) {
                 requestCategoryName(category)
@@ -107,22 +106,17 @@ class ManageCategoriesFragment : BaseFragment() {
     }
 
     private fun requestCategoryName(category: Category) {
-        val dialogs = Dialogs(this)
+        val dialogs = Dialogs(requireContext())
         dialogs.input(requireContext(), getString(R.string.label_product_edit_category),
-                category.name(), OnInputConfirmed { input: String? ->
+                category.name(), OnInputConfirmed { input: String ->
             viewModel.renameCategory(category, input)
         })
     }
 
     private fun confirmRemoveCategory(category: Category) {
-        var result = false
-
-        if (!categoryDao.contains(newName)) {
-            categoryDao.rename(category.name(), newName)
-            productDao.updateCategory(category.name(), newName)
-            result = true
+        val dialogs = Dialogs(requireContext())
+        dialogs.confirmation(category.name(), getString(R.string.dialog_remove_category)) {
+            viewModel.deleteCategory(category)
         }
-
-        return result
     }
 }

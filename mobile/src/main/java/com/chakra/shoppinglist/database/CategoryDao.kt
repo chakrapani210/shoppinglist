@@ -10,7 +10,7 @@ import com.chakra.shoppinglist.model.Category
 @Dao
 interface CategoryDao {
     @Query("SELECT * FROM Category")
-    fun all(): List<Category?>?
+    fun all(): List<Category>?
 
     @Query("SELECT EXISTS(SELECT * FROM Category WHERE name=:name)")
     operator fun contains(name: String?): Boolean
@@ -25,8 +25,7 @@ interface CategoryDao {
     fun delete(category: Category?)
 
     companion object {
-        @kotlin.jvm.JvmStatic
-        fun instance(context: Context?): CategoryDao? {
+        fun instance(context: Context): CategoryDao {
             return AppDatabase.instance(context).categoryDao()
         }
     }

@@ -19,15 +19,6 @@
         android:theme="@style/app.theme"
         tools:replace="android:allowBackup">
 
-        <activity
-            android:name="com.chakra.shoppinglist.activities.ManageCategoriesActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity
-            android:name="com.chakra.shoppinglist.activities.SearchImageActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible"/>
-
         <service
             android:name="com.chakra.shoppinglist.utils.WearableService"
             android:enabled="true"

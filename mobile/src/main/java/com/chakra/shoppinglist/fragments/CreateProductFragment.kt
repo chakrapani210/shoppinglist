@@ -10,12 +10,11 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import android.widget.ArrayAdapter
-import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.chakra.shoppinglist.R
-import com.chakra.shoppinglist.activities.ManageCategoriesActivity
-import com.chakra.shoppinglist.activities.SearchImageActivity
 import com.chakra.shoppinglist.base.BaseFragment
+import com.chakra.shoppinglist.base.ShoppingPlannerActivity
 import com.chakra.shoppinglist.model.Category
 import com.chakra.shoppinglist.model.Product
 import com.chakra.shoppinglist.utils.ResourceUtils.fileFromUri
@@ -24,6 +23,7 @@ import com.chakra.shoppinglist.utils.takePictureIntent
 import com.chakra.shoppinglist.viewmodel.CreateProductViewModel
 import com.chakra.shoppinglist.views.Dialogs
 import kotlinx.android.synthetic.main.screen_create_product.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 import kotlin.properties.Delegates
 
@@ -36,10 +36,8 @@ class CreateProductFragment : BaseFragment() {
         private const val CAMERA_PERMISSION = 1001
         private const val READ_DISK_PERMISSION = 1002
 
-        private const val MANAGE_CATEGORIES_REQUEST_CODE = 2000
-        private const val CAMERA_IMAGE_REQUEST_CODE = 2001
-        private const val GALLERY_IMAGE_REQUEST_CODE = 2002
-        private const val SEARCH_IMAGE_REQUEST_CODE = 2003
+        private const val CAMERA_IMAGE_REQUEST_CODE = 2000
+        private const val GALLERY_IMAGE_REQUEST_CODE = 2001
 
         fun getDataBundle(product: Product?) = Bundle().apply {
             putSerializable(PARAM_PRODUCT, product)
@@ -50,7 +48,7 @@ class CreateProductFragment : BaseFragment() {
         }
     }
 
-    private lateinit var viewModel: CreateProductViewModel
+    private val viewModel: CreateProductViewModel by viewModel()
     private var isCreateNew by Delegates.notNull<Boolean>()
     private lateinit var selectedImage: String
     private var cameraUri: Uri? = null
@@ -60,11 +58,10 @@ class CreateProductFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(viewModelStore,
-                ViewModelProvider.AndroidViewModelFactory(requireActivity().application))
-                .get(CreateProductViewModel::class.java)
         isCreateNew = arguments?.getSerializable(PARAM_PRODUCT) as Product? == null
     }
+
+    override fun getBaseViewModel() = viewModel
 
     override fun getTitle(): String = if (isCreateNew) {
         getString(R.string.toolbar_title_create_product)
@@ -121,14 +118,20 @@ class CreateProductFragment : BaseFragment() {
 
         viewModel.updateResult.observe(viewLifecycleOwner, {
             it?.let {
-                if (it) {
-                    requireActivity().onBackPressed()
-                } else {
-                    toast(getString(R.string.error_product_already_exists))
-                }
+                requireActivity().onBackPressed()
             }
-
         })
+
+        (requireActivity() as ShoppingPlannerActivity).commonViewModel.searchImageSelected.observe(viewLifecycleOwner, {
+            it?.let {
+                processSearchImage(it)
+            }
+        })
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.reloadCategories()
     }
 
     private fun loadCategoryList(categories: List<Category?>, category: String?, product: Product?) {
@@ -218,13 +221,12 @@ class CreateProductFragment : BaseFragment() {
     }
 
     private fun imageFromSearch() {
-        val intent = SearchImageActivity.intent(requireContext(), name())
-        startActivityForResult(intent, SEARCH_IMAGE_REQUEST_CODE)
+        findNavController().navigate(R.id.action_createProductScreen_to_searchImageScreen,
+                SearchImageFragment.getDataBundle(name()))
     }
 
     private fun onManageCategories() {
-        val intent = Intent(requireContext(), ManageCategoriesActivity::class.java)
-        startActivityForResult(intent, MANAGE_CATEGORIES_REQUEST_CODE)
+        findNavController().navigate(R.id.action_createProductScreen_to_manageCategoriesScreen)
     }
 
     private fun onAction(category: String, name: String, image: String, inCart: Boolean) {
@@ -270,10 +272,6 @@ class CreateProductFragment : BaseFragment() {
             processUriImage(cameraUri)
         } else if (requestCode == GALLERY_IMAGE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             processUriImage(data?.data)
-        } else if (requestCode == SEARCH_IMAGE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            processSearchImage(data?.getStringExtra(SearchImageActivity.PARAM_IMAGE_URL))
-        } else if (requestCode == MANAGE_CATEGORIES_REQUEST_CODE) {
-            viewModel.reloadCategories()
         }
     }
 }

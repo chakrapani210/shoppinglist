@@ -1,7 +1,5 @@
 package com.chakra.shoppinglist.fragments
 
-import android.os.Bundle
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
 import com.chakra.shoppinglist.R
@@ -9,21 +7,18 @@ import com.chakra.shoppinglist.base.BaseFragment
 import com.chakra.shoppinglist.model.Category
 import com.chakra.shoppinglist.viewmodel.AddProductViewModel
 import kotlinx.android.synthetic.main.screen_add_product.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AddProductFragment : BaseFragment(), ViewPager.OnPageChangeListener {
     private var lastCategorySelected: String? = null
-    private lateinit var viewModel: AddProductViewModel
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(viewModelStore,
-                ViewModelProvider.AndroidViewModelFactory(requireActivity().application))
-                .get(AddProductViewModel::class.java)
-    }
+    private val viewModel: AddProductViewModel by viewModel()
 
     override fun getTitle(): String = getString(R.string.toolbar_title_add_product)
 
     override val resourceLayoutId: Int
         get() = R.layout.screen_add_product
+
+    override fun getBaseViewModel() = viewModel
 
     override fun initialize() {
         pagerHeader.drawFullUnderline = false

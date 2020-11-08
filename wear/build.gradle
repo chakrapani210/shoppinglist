@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android
 {
@@ -10,7 +10,7 @@ android
     defaultConfig
     {
         applicationId 'com.chakra.shoppinglist'
-        minSdkVersion 22
+        minSdkVersion 21
         targetSdkVersion 30
         versionCode 13
         versionName '2.1.0'

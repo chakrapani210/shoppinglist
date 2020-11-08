@@ -3,6 +3,7 @@ package com.chakra.shoppinglist.viewmodel
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.chakra.shoppinglist.R
 import com.chakra.shoppinglist.data.ShoppingPlanRepository
 import com.chakra.shoppinglist.model.Product
 import kotlinx.coroutines.launch
@@ -10,15 +11,24 @@ import kotlinx.coroutines.launch
 class CreateProductViewModel(application: Application,
                              repository: ShoppingPlanRepository) : AddProductViewModel(application, repository) {
     val updateResult = MutableLiveData<Boolean>()
+
     fun updateProduct(oldProduct: Product, newProduct: Product) {
         viewModelScope.launch {
-            updateResult.value = repository.updateProduct(oldProduct, newProduct)
+            if (repository.updateProduct(oldProduct, newProduct)) {
+                updateResult.value = true
+            } else {
+                setError(R.string.error_category_already_exists)
+            }
         }
     }
 
     fun createProduct(newProduct: Product) {
         viewModelScope.launch {
-            updateResult.value = repository.createProduct(newProduct)
+            if (repository.createProduct(newProduct)) {
+                updateResult.value = true
+            } else {
+                setError(R.string.error_category_already_exists)
+            }
         }
     }
 }
