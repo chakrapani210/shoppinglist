@@ -6,13 +6,10 @@ import com.chakra.shoppinglist.model.Category
 import com.chakra.shoppinglist.model.Product
 import com.chakra.shoppinglist.model.ShoppingPlan
 import com.chakra.shoppinglist.model.ShoppingPlanType
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class ShoppingPlanRepository @Inject constructor(private val imageService: SearchImageService,
-                                                 private val productDao: ProductDao,
-                                                 private val categoryDao: CategoryDao) {
+class ShoppingPlanRepository constructor(private val imageService: SearchImageService,
+                                         private val productDao: ProductDao,
+                                         private val categoryDao: CategoryDao) {
 
     fun getShoppingPlanList(): List<ShoppingPlan>? {
         return listOf(ShoppingPlan("Birth Day", ShoppingPlanType.BIRTHDAY_PARTY))
