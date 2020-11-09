@@ -19,14 +19,33 @@
         android:theme="@style/app.theme"
         tools:replace="android:allowBackup">
 
+        <activity android:name=".base.ShoppingPlannerActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="chakra.com"
+                    android:pathPattern="/shoppinglist"
+                    android:scheme="https" />
+
+            </intent-filter>
+        </activity>
         <service
             android:name="com.chakra.shoppinglist.utils.WearableService"
             android:enabled="true"
-            android:exported="false"/>
+            android:exported="false" />
 
         <meta-data
             android:name="DATABASE"
-            android:value="shoppinglist.db"/>
+            android:value="shoppinglist.db" />
 
         <meta-data
             android:name="VERSION"

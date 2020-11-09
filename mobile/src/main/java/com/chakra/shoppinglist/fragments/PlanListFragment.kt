@@ -8,6 +8,7 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -41,7 +42,7 @@ class PlanListFragment : BaseFragment() {
         adapter = PlanListAdapter()
         planList.adapter = adapter
 
-        viewModel.shoppingListLiveData.observe(viewLifecycleOwner, { list ->
+        viewModel.shoppingListLiveData.observe(viewLifecycleOwner) { list ->
             list?.let {
                 if (it.isEmpty()) {
                     findNavController().navigate(R.id.action_planListScreen_to_addPlanScreen)
@@ -49,7 +50,7 @@ class PlanListFragment : BaseFragment() {
                     adapter.setList(it)
                 }
             }
-        })
+        }
     }
 
     override fun getTitle() = getString(R.string.shopping_plan_list_label)

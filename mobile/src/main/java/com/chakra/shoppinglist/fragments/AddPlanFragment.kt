@@ -10,6 +10,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -48,14 +49,14 @@ class AddPlanFragment : BaseFragment() {
             return@setOnEditorActionListener false
         }
 
-        viewModel.shoppingTypeSuggestions.observe(viewLifecycleOwner, { list ->
+        viewModel.shoppingTypeSuggestions.observe(viewLifecycleOwner) { list ->
             adapter.setList(list)
-        })
+        }
 
-        viewModel.shoppingPlanAddedLiveData.observe(viewLifecycleOwner, { shoppingPlan ->
+        viewModel.shoppingPlanAddedLiveData.observe(viewLifecycleOwner) { shoppingPlan ->
             findNavController().navigate(R.id.action_addPlanScreen_to_shoppingCartViewScreen,
                     ShoppingCartViewFragment.getDataBundle(shoppingPlan))
-        })
+        }
 
         planNameEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(text: Editable?) {

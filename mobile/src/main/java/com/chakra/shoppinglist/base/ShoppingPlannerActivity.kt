@@ -8,7 +8,7 @@ import com.chakra.shoppinglist.R
 import com.chakra.shoppinglist.viewmodel.CommonViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-abstract class ShoppingPlannerActivity : AppCompatActivity() {
+class ShoppingPlannerActivity : AppCompatActivity() {
     val commonViewModel: CommonViewModel by viewModel()
 
     public override fun onCreate(savedInstanceState: Bundle?) {

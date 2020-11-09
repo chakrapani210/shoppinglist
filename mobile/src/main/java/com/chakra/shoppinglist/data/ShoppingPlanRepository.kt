@@ -6,119 +6,128 @@ import com.chakra.shoppinglist.model.Category
 import com.chakra.shoppinglist.model.Product
 import com.chakra.shoppinglist.model.ShoppingPlan
 import com.chakra.shoppinglist.model.ShoppingPlanType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class ShoppingPlanRepository constructor(private val imageService: SearchImageService,
                                          private val productDao: ProductDao,
                                          private val categoryDao: CategoryDao) {
 
-    fun getShoppingPlanList(): List<ShoppingPlan>? {
-        return listOf(ShoppingPlan("Birth Day", ShoppingPlanType.BIRTHDAY_PARTY))
+    suspend fun getShoppingPlanList() = withContext(Dispatchers.Default) {
+        listOf(ShoppingPlan("Birth Day", ShoppingPlanType.BIRTHDAY_PARTY))
     }
 
-    fun getShoppingSuggestionsTypeList(): List<ShoppingPlanType>? {
-        return ShoppingPlanType.values().asList()
+    suspend fun getShoppingSuggestionsTypeList() = withContext(Dispatchers.Default) {
+        ShoppingPlanType.values().asList()
     }
 
-    fun getProductList(category: String): List<Product>? {
+    suspend fun getProductList(category: String) = withContext(Dispatchers.Default) {
         val productList = productDao.byCategory(category, false)
-        return productList?.sortedWith { p1: Product, p2: Product ->
+
+        return@withContext productList?.sortedWith(Comparator { p1: Product, p2: Product ->
             p1.name().compareTo(p2.name())
-        }
+        })
     }
 
-    fun getProductByNameList(name: String) = productDao.byName(name)
+    suspend fun getProductByNameList(name: String) = withContext(Dispatchers.Default) {
+        productDao.byName(name)
+    }
 
-    fun deleteProduct(product: Product) {
+    suspend fun deleteProduct(product: Product) = withContext(Dispatchers.Default) {
         productDao.delete(product)
     }
 
-    fun productsInShoppingPlan() = sortList(productDao.inCart())
-
-    private fun sortList(list: List<Product>?): List<Product>? {
-        return list?.sortedWith { p1: Product, p2: Product ->
-            if (!p1.isSelected && p2.isSelected) {
-                return@sortedWith -1
-            } else if (p1.isSelected && !p2.isSelected) {
-                return@sortedWith 1
-            } else {
-                if (p1.category != p2.category) {
-                    return@sortedWith p1.category().compareTo(p2.category())
-                } else {
-                    return@sortedWith p1.name().compareTo(p2.name())
-                }
-            }
-        }
+    suspend fun productsInShoppingPlan() = withContext(Dispatchers.Default) {
+        sortList(productDao.inCart())
     }
 
-    fun setSelection(product: Product) {
+    private fun sortList(list: List<Product>?): List<Product>? {
+        return list?.sortedWith(Comparator { p1: Product, p2: Product ->
+            if (!p1.isSelected && p2.isSelected) {
+                -1
+            } else if (p1.isSelected && !p2.isSelected) {
+                1
+            } else {
+                if (p1.category != p2.category) {
+                    p1.category().compareTo(p2.category())
+                } else {
+                    p1.name().compareTo(p2.name())
+                }
+            }
+        })
+    }
+
+    suspend fun setSelection(product: Product) = withContext(Dispatchers.Default) {
         productDao.setSelection(product.id(), product.isSelected)
     }
 
-    fun setSelection(productId: Int?, selected: Boolean?) {
+    suspend fun setSelection(productId: Int?, selected: Boolean?) = withContext(Dispatchers.Default) {
         productDao.moveToCart(productId, !selected!!, selected)
     }
 
-    fun moveToCart(product: Product) {
+    suspend fun moveToCart(product: Product) = withContext(Dispatchers.Default) {
         productDao.moveToCart(product.id(), true, false)
     }
 
-    fun removeFromCart(products: List<Product>) {
+    suspend fun removeFromCart(products: List<Product>) = withContext(Dispatchers.Default) {
         for (product in products) {
             productDao.moveToCart(product.id(), false, false)
         }
     }
 
-    fun getAllCategories(): List<Category>? {
+    suspend fun getAllCategories() = withContext(Dispatchers.Default) {
         var categories = categoryDao.all()
-        return categories?.sortedWith { c1: Category, c2: Category -> c1.name().compareTo(c2.name()) }
+        return@withContext categories?.sortedWith(Comparator { c1: Category, c2: Category -> c1.name().compareTo(c2.name()) })
     }
 
-    fun createProduct(newProduct: Product): Boolean {
+    suspend fun createProduct(newProduct: Product) = withContext(Dispatchers.Default) {
         if (!productDao.containsWithName(newProduct.name())) {
             productDao.insert(newProduct)
-            return true
+            return@withContext true
         }
-        return false
+        return@withContext false
     }
 
-    fun updateProduct(oldProduct: Product, newProduct: Product): Boolean {
+    suspend fun updateProduct(oldProduct: Product, newProduct: Product) = withContext(Dispatchers.Default) {
         val product: Product? = productDao.byName(newProduct.name())
 
         if (product == null || product.id() == oldProduct.id()) {
             productDao.update(oldProduct.id(), newProduct.name(), newProduct.category(), newProduct.image())
-            return true
+            return@withContext true
         }
-        return false
+        return@withContext false
     }
 
     /**
      * Category
      */
-    fun addCategory(category: Category): Boolean {
+    suspend fun addCategory(category: Category) = withContext(Dispatchers.Default) {
         if (!categoryDao.contains(category.name())) {
             categoryDao.insert(category)
-            return true
+            return@withContext true
         }
-        return false
+        return@withContext false
     }
 
-    fun renameCategory(category: Category, newName: String): Boolean {
+    suspend fun renameCategory(category: Category, newName: String) = withContext(Dispatchers.Default) {
         if (!categoryDao.contains(newName)) {
             categoryDao.rename(category.name(), newName)
             productDao.updateCategory(category.name(), newName)
-            return true
+            return@withContext true
         }
-        return false
+        return@withContext false
     }
 
-    fun deleteCategory(category: Category): Boolean {
+    suspend fun deleteCategory(category: Category) = withContext(Dispatchers.Default) {
         if (!productDao.containsWithCategory(category.name())) {
             categoryDao.delete(category)
-            return true
+            return@withContext true
         }
-        return false
+        return@withContext false
     }
 
     // Image Search
-    fun searchImage(query: String) = imageService.searchImages(query)
+    suspend fun searchImage(query: String) = withContext(Dispatchers.Default) {
+        imageService.searchImages(query)
+    }
 }

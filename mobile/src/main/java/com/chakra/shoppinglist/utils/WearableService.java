@@ -7,16 +7,10 @@ import android.os.IBinder;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.chakra.common.api.CartElement;
 import com.chakra.common.message.Message;
-import com.chakra.shoppinglist.model.Product;
 import com.google.android.gms.wearable.MessageClient;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Wearable;
-import com.google.gson.Gson;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class WearableService extends Service implements MessageClient.OnMessageReceivedListener
 {
@@ -53,7 +47,7 @@ public class WearableService extends Service implements MessageClient.OnMessageR
 
     private void returnProducts(String nodeId)
     {
-        LoadProductsInCart task = new LoadProductsInCart(this, products ->
+        /*LoadProductsInCart task = new LoadProductsInCart(this, products ->
         {
             List<CartElement> cartElements = new ArrayList<>();
 
@@ -65,19 +59,18 @@ public class WearableService extends Service implements MessageClient.OnMessageR
             Message response = new Message(nodeId, Message.RESPONSE_PRODUCTS, new Gson().toJson(cartElements));
             response.send(this);
         });
-        task.execute();
+        task.execute();*/
     }
 
     private void selectProduct(String payload)
     {
-        try
-        {
+        try {
             String[] parts = payload.split(":");
             Integer productId = Integer.parseInt(parts[0]);
             Boolean selected = Boolean.parseBoolean(parts[1]);
 
-            UpdateProducts task = new UpdateProducts(this);
-            task.setSelection(productId, selected);
+           /* UpdateProducts task = new UpdateProducts(this);
+            task.setSelection(productId, selected);*/
         }
         catch (Exception e)
         {

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chakra.shoppinglist.R
@@ -42,9 +43,9 @@ class ManageCategoriesFragment : BaseFragment() {
         adapter = CategoriesAdapter()
         categoryList.adapter = adapter
 
-        viewModel.categoryList.observe(viewLifecycleOwner, {
+        viewModel.categoryList.observe(viewLifecycleOwner) {
             updateList(it)
-        })
+        }
     }
 
     private fun updateList(categories: List<Category>?) {

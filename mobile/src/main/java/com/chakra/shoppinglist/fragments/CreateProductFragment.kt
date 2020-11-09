@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import android.widget.ArrayAdapter
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.chakra.shoppinglist.R
@@ -104,7 +105,7 @@ class CreateProductFragment : BaseFragment() {
             onManageCategories()
         }
 
-        viewModel.categoryList.observe(viewLifecycleOwner, { list ->
+        viewModel.categoryList.observe(viewLifecycleOwner) { list ->
             list?.let {
                 var category: String? = null
                 var product: Product? = null
@@ -114,7 +115,7 @@ class CreateProductFragment : BaseFragment() {
                 }
                 loadCategoryList(it, category, product)
             }
-        })
+        }
 
         viewModel.updateResult.observe(viewLifecycleOwner, {
             it?.let {

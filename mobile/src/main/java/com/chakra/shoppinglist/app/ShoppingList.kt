@@ -6,6 +6,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
 
 class ShoppingList : SugarApp() {
     override fun onCreate() {
@@ -14,7 +15,7 @@ class ShoppingList : SugarApp() {
         //Fabric.with(this, new Crashlytics());
         startKoin {
             // use AndroidLogger as Koin Logger - default Level.INFO
-            androidLogger()
+            androidLogger(Level.ERROR)
 
             // use the Android context given there
             androidContext(this@ShoppingList)

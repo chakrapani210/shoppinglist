@@ -1,5 +1,6 @@
 package com.chakra.shoppinglist.fragments
 
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
 import com.chakra.shoppinglist.R
@@ -28,11 +29,11 @@ class AddProductFragment : BaseFragment(), ViewPager.OnPageChangeListener {
             findNavController().navigate(R.id.action_addProductScreen_to_createProductScreen)
         }
 
-        viewModel.categoryList.observe(viewLifecycleOwner, {
+        viewModel.categoryList.observe(viewLifecycleOwner) {
             it?.let {
                 updateTabList(it)
             }
-        })
+        }
     }
 
     override fun onStart() {

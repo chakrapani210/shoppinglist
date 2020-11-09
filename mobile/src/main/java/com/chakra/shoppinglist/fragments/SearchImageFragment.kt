@@ -6,6 +6,7 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import androidx.lifecycle.observe
 import com.chakra.shoppinglist.R
 import com.chakra.shoppinglist.base.BaseFragment
 import com.chakra.shoppinglist.base.ShoppingPlannerActivity
@@ -61,9 +62,9 @@ class SearchImageFragment : BaseFragment() {
 
         query(arguments?.getString(PARAM_INITIAL_QUERY))
 
-        viewModel.searchImageList.observe(viewLifecycleOwner, {
+        viewModel.searchImageList.observe(viewLifecycleOwner) {
             loadImages(it)
-        })
+        }
     }
 
     private fun onSearch() {
