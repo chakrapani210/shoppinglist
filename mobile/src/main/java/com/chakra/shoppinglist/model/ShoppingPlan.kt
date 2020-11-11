@@ -1,22 +1,11 @@
 package com.chakra.shoppinglist.model
 
-import com.chakra.shoppinglist.R
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.Relation
 import java.io.Serializable
-
-
-enum class ShoppingPlanType(val nameResId: Int, val imageResourceId: Int? = null) {
-    GROCERIES(R.string.plan_type_groceries),
-    BIRTHDAY_PARTY(R.string.plan_type_birth_day_party),
-    PARTY(R.string.plan_type_party),
-    MARRIAGE(R.string.plan_type_marriage),
-    MARRIAGE_ANNIVERSARY(R.string.plan_type_marriage_anniversary),
-    GARMENTS(R.string.plan_type_garments),
-    STYLE_SHOPPING(R.string.plan_type_style_shopping),
-    HALLOWEEN_SHOPPING(R.string.plan_type_halloween_shopping),
-    THANKS_GIVING_SHOPPING(R.string.plan_type_thanks_giving),
-    CHRISTMAS_SHOPPING(R.string.plan_type_christmas),
-    OTHER(R.string.plan_type_groceries)
-}
+import java.util.*
 
 enum class ShoppingPlanStatus {
     OPEN,
@@ -24,9 +13,66 @@ enum class ShoppingPlanStatus {
     DELETED
 }
 
+@Entity
+data class ShoppingPlanType(@field:PrimaryKey(autoGenerate = true) val id: Long,
+                            val name: String,
+                            val image: String?)
+
+@Entity
 data class ShoppingPlan(val name: String,
-                        val shoppingPlan: ShoppingPlanType,
-                        val status: ShoppingPlanStatus = ShoppingPlanStatus.OPEN,
-                        val id: Int? = null,
-                        val lastModifiedData: Long? = null,
-                        val createdData: Long? = null) : Serializable
+                        val shoppingPlanTypeId: Long,
+                        val statusId: Int,
+                        val createdDate: Calendar,
+                        val lastModifiedData: Calendar,
+                        @field:PrimaryKey(autoGenerate = true) val id: Long? = null) : Serializable {
+
+    var status: ShoppingPlanStatus = ShoppingPlanStatus.values()[this.statusId]
+
+    constructor(name: String,
+                shoppingPlanTypeId: Long,
+                status: ShoppingPlanStatus = ShoppingPlanStatus.OPEN,
+                lastModifiedData: Calendar = Calendar.getInstance(),
+                createdDate: Calendar = Calendar.getInstance(),
+                id: Long? = null)
+            : this(name, shoppingPlanTypeId, status.ordinal, createdDate, lastModifiedData, id)
+
+    val isValid: Boolean
+        get() = name.isNullOrEmpty()
+}
+
+/**
+ * This hold the Products that are added to Plan
+ */
+@Entity
+data class InCartProductData(val planId: Long,
+                             val productId: Long,
+                             val selected: Boolean,
+                             val quantity: Float,
+                             @field:PrimaryKey(autoGenerate = true) val id: Long? = null)
+
+data class ProductWithFullData(
+        @Embedded val product: Product,
+        @Relation(
+                parentColumn = "id",
+                entityColumn = "productId"
+        )
+        val inCartProductData: InCartProductData
+)
+
+data class ShoppingPlanWithCart(
+        @Embedded val shoppingPlan: ShoppingPlan,
+        @Relation(
+                entity = InCartProductData::class,
+                parentColumn = "id",
+                entityColumn = "planId"
+        )
+        val cart: List<ProductWithFullData>
+)
+
+/**
+ * This hold the Products that are under a Category
+ */
+/*
+@Entity
+data class PlanCategoryProductList(val planId: Long,
+                               val categoryId: Long)*/

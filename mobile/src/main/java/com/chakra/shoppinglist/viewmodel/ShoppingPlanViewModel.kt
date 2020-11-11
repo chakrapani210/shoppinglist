@@ -15,7 +15,7 @@ class ShoppingPlanViewModel(application: Application,
 
     fun reloadProductsInPlan(shoppingPlan: ShoppingPlan? = null) {
         viewModelScope.launch {
-            productsInPlan.value = repository.productsInShoppingPlan()
+            productsInPlan.value = repository.productsInShoppingPlan(shoppingPlan)
         }
     }
 
@@ -27,7 +27,7 @@ class ShoppingPlanViewModel(application: Application,
 
     fun setSelectedProduct(product: Product) {
         viewModelScope.launch {
-            repository.setSelection(product)
+            repository.updateCartItem(product)
             reloadProductsInPlan()
         }
     }

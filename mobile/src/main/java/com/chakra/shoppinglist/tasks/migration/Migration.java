@@ -11,8 +11,8 @@ import com.chakra.shoppinglist.database.CategoryDao;
 import com.chakra.shoppinglist.database.ProductDao;
 import com.chakra.shoppinglist.model.Category;
 import com.chakra.shoppinglist.model.Product;
-import com.chakra.shoppinglist.utils.ResourceUtils;
 import com.chakra.shoppinglist.old.CartItem;
+import com.chakra.shoppinglist.utils.ResourceUtils;
 import com.orm.query.Select;
 
 import java.io.File;
@@ -28,8 +28,7 @@ public class Migration extends AsyncTask<Void, Void, Void>
     private final OnMigrationDone callback;
     private final ProgressDialog dialog;
 
-    public Migration(Context context, OnMigrationDone callback)
-    {
+    public Migration(Context context, OnMigrationDone callback) {
         this.context = context;
         this.database = AppDatabase.instance(context);
         this.callback = callback;
@@ -137,11 +136,12 @@ public class Migration extends AsyncTask<Void, Void, Void>
     }
 
     @Override
-    protected void onPostExecute(Void aVoid)
-    {
+    protected void onPostExecute(Void aVoid) {
         dialog.dismiss();
 
-        callback.onMigrationDone();
+        if (callback != null) {
+            callback.onMigrationDone();
+        }
     }
 
     public interface OnMigrationDone

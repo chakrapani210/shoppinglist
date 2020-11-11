@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
-        android:name="com.chakra.shoppinglist.app.ShoppingList"
+        android:name="com.chakra.shoppinglist.app.ShoppingPlannerApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/application.name"

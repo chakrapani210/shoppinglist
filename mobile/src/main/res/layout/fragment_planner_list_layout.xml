@@ -13,11 +13,4 @@
         android:layout_marginEnd="@dimen/pageMargin"
         android:layout_marginBottom="@dimen/pageMargin" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/createPlan"
-        style="@style/floatingButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:src="@drawable/ic_plus" />
 </FrameLayout>

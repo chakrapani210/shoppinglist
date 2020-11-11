@@ -10,9 +10,9 @@ import kotlinx.coroutines.launch
 class ManageCategoriesViewModel(application: Application,
                                 repository: ShoppingPlanRepository) : AddProductViewModel(application, repository) {
 
-    fun addCategory(category: Category) {
+    fun addCategory(category: String) {
         viewModelScope.launch {
-            if (repository.addCategory(category)) {
+            if (repository.addCategory(Category(category))) {
                 reloadCategories()
             } else {
                 errorMessage.value = getApplication<Application>().getString(R.string.error_category_already_exists)

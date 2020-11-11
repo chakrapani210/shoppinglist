@@ -19,6 +19,20 @@ abstract class BaseFragment : Fragment() {
         initialize()
     }
 
+    override fun onStart() {
+        super.onStart()
+        updateTitle()
+        updateFloatingButton()
+    }
+
+    open fun updateTitle() {
+        (requireActivity() as ShoppingPlannerActivity).title = getTitle()
+    }
+
+    open fun updateFloatingButton() {
+        (requireActivity() as ShoppingPlannerActivity).updateFloatingButton(this)
+    }
+
     protected fun toast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
@@ -35,6 +49,11 @@ abstract class BaseFragment : Fragment() {
     abstract fun getBaseViewModel(): BaseViewModel?
 
     protected abstract fun getTitle(): String
+
+    open fun onFloatingButtonClicked() {
+    }
+
+    open fun isFloatingButtonEnabled() = false
 
     protected abstract val resourceLayoutId: Int
 }

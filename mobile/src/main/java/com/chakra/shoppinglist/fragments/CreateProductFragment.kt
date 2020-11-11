@@ -237,9 +237,9 @@ class CreateProductFragment : BaseFragment() {
             missingName()
         } else {
             val oldProduct: Product? = arguments?.getSerializable(PARAM_PRODUCT) as Product
-            val newProduct = Product(category, name, image, inCart, false)
+            val newProduct = Product(category, name, image, inCart, false, oldProduct.id)
             if (oldProduct != null) {
-                viewModel.updateProduct(oldProduct, newProduct)
+                viewModel.updateProduct(newProduct)
             } else {
                 viewModel.createProduct(newProduct)
             }

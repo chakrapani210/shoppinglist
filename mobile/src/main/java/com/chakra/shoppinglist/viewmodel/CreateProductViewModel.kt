@@ -12,9 +12,9 @@ class CreateProductViewModel(application: Application,
                              repository: ShoppingPlanRepository) : AddProductViewModel(application, repository) {
     val updateResult = MutableLiveData<Boolean>()
 
-    fun updateProduct(oldProduct: Product, newProduct: Product) {
+    fun updateProduct(newProduct: Product) {
         viewModelScope.launch {
-            if (repository.updateProduct(oldProduct, newProduct)) {
+            if (repository.updateProduct(newProduct)) {
                 updateResult.value = true
             } else {
                 setError(R.string.error_category_already_exists)

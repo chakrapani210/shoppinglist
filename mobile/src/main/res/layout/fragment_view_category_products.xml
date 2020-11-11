@@ -6,13 +6,13 @@
     android:background="@color/list.background">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/product.list"
+        android:id="@+id/productList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@null" />
 
     <TextView
-        android:id="@+id/label.empty"
+        android:id="@+id/labelEmpty"
         style="@style/labelEmpty"/>
 
 </FrameLayout>

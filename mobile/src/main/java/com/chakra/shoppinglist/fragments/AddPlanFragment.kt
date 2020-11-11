@@ -54,8 +54,11 @@ class AddPlanFragment : BaseFragment() {
         }
 
         viewModel.shoppingPlanAddedLiveData.observe(viewLifecycleOwner) { shoppingPlan ->
-            findNavController().navigate(R.id.action_addPlanScreen_to_shoppingCartViewScreen,
-                    ShoppingCartViewFragment.getDataBundle(shoppingPlan))
+            shoppingPlan?.let {
+                findNavController().navigate(R.id.action_addPlanScreen_to_shoppingCartViewScreen,
+                        ShoppingCartViewFragment.getDataBundle(shoppingPlan))
+                viewModel.shoppingPlanAddedLiveData.value = null
+            }
         }
 
         planNameEditText.addTextChangedListener(object : TextWatcher {
@@ -113,7 +116,7 @@ class AddPlanFragment : BaseFragment() {
             itemView.setOnClickListener {
                 onAddPlan(planType)
             }
-            planType.imageResourceId?.let {
+            planType.imageResourceId.let {
                 cardView.background = ContextCompat.getDrawable(context!!, it)
             }
             label.text = planType.name

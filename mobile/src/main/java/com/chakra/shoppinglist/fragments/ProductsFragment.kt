@@ -18,7 +18,7 @@ import com.chakra.shoppinglist.model.Product
 import com.chakra.shoppinglist.utils.Analytics
 import com.chakra.shoppinglist.viewmodel.ProductsViewModel
 import com.chakra.shoppinglist.views.Dialogs
-import kotlinx.android.synthetic.main.fragment_planner_list_layout.*
+import kotlinx.android.synthetic.main.fragment_view_category_products.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
@@ -47,16 +47,29 @@ class ProductsFragment : BaseFragment() {
 
     override fun getBaseViewModel() = viewModel
 
+    override fun updateTitle() {
+        // ignore
+    }
+
+    override fun updateFloatingButton() {
+        // ignore
+    }
+
     override fun initialize() {
         val layoutManager = LinearLayoutManager(context)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
-        planList.layoutManager = layoutManager
+        productList.layoutManager = layoutManager
         adapter = ProductsAdapter()
-        planList.adapter = adapter
+        productList.adapter = adapter
 
         viewModel.productsLiveData.observe(viewLifecycleOwner) { list: List<Product>? ->
-            list?.let {
-                adapter.setList(it)
+            if (list.isNullOrEmpty()) {
+                productList.visibility = View.GONE
+                labelEmpty.visibility = View.VISIBLE
+            } else {
+                productList.visibility = View.VISIBLE
+                labelEmpty.visibility = View.GONE
+                adapter.setList(list)
             }
         }
     }
@@ -136,7 +149,9 @@ class ProductsFragment : BaseFragment() {
         var options: View? = view.findViewById(R.id.product_options)
 
         fun bind(product: Product, imageLoader: RequestManager) {
-            onProductSelected(product)
+            itemView.setOnClickListener {
+                onProductSelected(product)
+            }
             name!!.text = product.name()
             imageLoader.load(product.image()).into(image!!)
             options!!.setOnClickListener { v: View? -> onProductsOptions(product) }

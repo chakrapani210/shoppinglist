@@ -15,7 +15,7 @@ class ProductsViewModel(application: Application,
     fun reloadProducts(category: String) {
         this.category = category
         viewModelScope.launch {
-            productsLiveData.postValue(repository.getProductList(category))
+            productsLiveData.postValue(repository.getProductListForCategory(category))
         }
     }
 

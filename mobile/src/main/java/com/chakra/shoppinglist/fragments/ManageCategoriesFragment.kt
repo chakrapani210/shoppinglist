@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.screen_manage_categories.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
+
 class ManageCategoriesFragment : BaseFragment() {
     private lateinit var adapter: CategoriesAdapter
     private val viewModel: ManageCategoriesViewModel by viewModel()
@@ -120,4 +121,18 @@ class ManageCategoriesFragment : BaseFragment() {
             viewModel.deleteCategory(category)
         }
     }
+
+    override fun isFloatingButtonEnabled() = true
+
+    override fun onFloatingButtonClicked() {
+        onRequestCategoryAdd()
+    }
+
+    private fun onRequestCategoryAdd() {
+        val dialogs = Dialogs(requireContext())
+        dialogs.input(requireContext(), getString(R.string.label_product_new_category), "") { name ->
+            viewModel.addCategory(name)
+        }
+    }
+
 }

@@ -57,10 +57,6 @@ class ShoppingCartViewFragment : BaseFragment() {
         val analytics = Analytics(requireContext())
         analytics.appLaunched()
 
-        product_add.setOnClickListener {
-            onAddProduct()
-        }
-
         val layoutManager = GridLayoutManager(context, 2)
         product_list.layoutManager = layoutManager
         adapter = ShoppingPlanAdapter()
@@ -71,6 +67,12 @@ class ShoppingCartViewFragment : BaseFragment() {
         }
 
     }
+
+    override fun onFloatingButtonClicked() {
+        onAddProduct()
+    }
+
+    override fun isFloatingButtonEnabled() = true
 
     override fun getTitle() = getString(R.string.toolbar_title_main)
 

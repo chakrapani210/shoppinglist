@@ -25,15 +25,18 @@ class AddProductFragment : BaseFragment(), ViewPager.OnPageChangeListener {
         pagerHeader.drawFullUnderline = false
         pagerHeader.tabIndicatorColor = requireContext().resources.getColor(R.color.primary)
 
-        productCreate.setOnClickListener {
-            findNavController().navigate(R.id.action_addProductScreen_to_createProductScreen)
-        }
-
         viewModel.categoryList.observe(viewLifecycleOwner) {
             it?.let {
                 updateTabList(it)
             }
         }
+    }
+
+    override fun isFloatingButtonEnabled() = true
+
+    override fun onFloatingButtonClicked() {
+        findNavController().navigate(R.id.action_addProductScreen_to_createProductScreen,
+                CreateProductFragment.getDataBundle(lastCategorySelected))
     }
 
     override fun onStart() {

@@ -33,10 +33,6 @@ class PlanListFragment : BaseFragment() {
         val intent = Intent(context, WearableService::class.java)
         requireActivity().startService(intent)
 
-        createPlan.setOnClickListener {
-            findNavController().navigate(R.id.action_planListScreen_to_addPlanScreen)
-        }
-
         val layoutManager = GridLayoutManager(context, 2)
         planList.layoutManager = layoutManager
         adapter = PlanListAdapter()
@@ -52,6 +48,12 @@ class PlanListFragment : BaseFragment() {
             }
         }
     }
+
+    override fun onFloatingButtonClicked() {
+        findNavController().navigate(R.id.action_planListScreen_to_addPlanScreen)
+    }
+
+    override fun isFloatingButtonEnabled() = true
 
     override fun getTitle() = getString(R.string.shopping_plan_list_label)
 
@@ -84,7 +86,7 @@ class PlanListFragment : BaseFragment() {
                 findNavController().navigate(R.id.action_planListScreen_to_shoppingCartViewScreen,
                         ShoppingCartViewFragment.getDataBundle(plan))
             }
-            plan.shoppingPlan.imageResourceId?.let {
+            plan.shoppingPlanType.imageResourceId.let {
                 cardView.background = ContextCompat.getDrawable(requireContext(), it)
             }
             checkBox.isChecked = (plan.status != ShoppingPlanStatus.OPEN)

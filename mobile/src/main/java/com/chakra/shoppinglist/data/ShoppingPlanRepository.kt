@@ -2,30 +2,29 @@ package com.chakra.shoppinglist.data
 
 import com.chakra.shoppinglist.database.CategoryDao
 import com.chakra.shoppinglist.database.ProductDao
-import com.chakra.shoppinglist.model.Category
-import com.chakra.shoppinglist.model.Product
-import com.chakra.shoppinglist.model.ShoppingPlan
-import com.chakra.shoppinglist.model.ShoppingPlanType
+import com.chakra.shoppinglist.database.ShoppingPlanDao
+import com.chakra.shoppinglist.model.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class ShoppingPlanRepository constructor(private val imageService: SearchImageService,
+                                         private val shoppingPlanDao: ShoppingPlanDao,
                                          private val productDao: ProductDao,
                                          private val categoryDao: CategoryDao) {
 
     suspend fun getShoppingPlanList() = withContext(Dispatchers.Default) {
-        listOf(ShoppingPlan("Birth Day", ShoppingPlanType.BIRTHDAY_PARTY))
+        shoppingPlanDao.all()
     }
 
     suspend fun getShoppingSuggestionsTypeList() = withContext(Dispatchers.Default) {
-        ShoppingPlanType.values().asList()
+        shoppingPlanDao.getAllShoppingPlanTypes()
     }
 
-    suspend fun getProductList(category: String) = withContext(Dispatchers.Default) {
-        val productList = productDao.byCategory(category, false)
+    suspend fun getProductListForCategory(categoryId: Long) = withContext(Dispatchers.Default) {
+        val productList = categoryDao.allProductsOf(categoryId)?.cart
 
         return@withContext productList?.sortedWith(Comparator { p1: Product, p2: Product ->
-            p1.name().compareTo(p2.name())
+            p1.name.compareTo(p2.name)
         })
     }
 
@@ -37,41 +36,37 @@ class ShoppingPlanRepository constructor(private val imageService: SearchImageSe
         productDao.delete(product)
     }
 
-    suspend fun productsInShoppingPlan() = withContext(Dispatchers.Default) {
-        sortList(productDao.inCart())
+    suspend fun productsInShoppingPlan(shoppingPlan: ShoppingPlan) = withContext(Dispatchers.Default) {
+        sortList(shoppingPlanDao.getAllProductsOf(shoppingPlan.id)?.cart)
     }
 
-    private fun sortList(list: List<Product>?): List<Product>? {
-        return list?.sortedWith(Comparator { p1: Product, p2: Product ->
-            if (!p1.isSelected && p2.isSelected) {
+    private fun sortList(list: List<ProductWithFullData>?): List<ProductWithFullData>? {
+        return list?.sortedWith(Comparator { p1: ProductWithFullData, p2: ProductWithFullData ->
+            if (!p1.inCartProductData.selected && p2.inCartProductData.selected) {
                 -1
-            } else if (p1.isSelected && !p2.isSelected) {
+            } else if (p1.inCartProductData.selected && !p2.inCartProductData.selected) {
                 1
             } else {
-                if (p1.category != p2.category) {
+                /*if (p1.product.category != p2.product.category) {
                     p1.category().compareTo(p2.category())
-                } else {
-                    p1.name().compareTo(p2.name())
-                }
+                } else {*/
+                p1.product.name.compareTo(p2.product.name)
+                //}
             }
         })
     }
 
-    suspend fun setSelection(product: Product) = withContext(Dispatchers.Default) {
-        productDao.setSelection(product.id(), product.isSelected)
+    suspend fun updateCartItem(inCartProductData: InCartProductData) = withContext(Dispatchers.Default) {
+        shoppingPlanDao.update(inCartProductData)
     }
 
-    suspend fun setSelection(productId: Int?, selected: Boolean?) = withContext(Dispatchers.Default) {
-        productDao.moveToCart(productId, !selected!!, selected)
+    suspend fun moveToCart(shoppingPlan: ShoppingPlan, product: Product, quantity: Float = 1.0f) = withContext(Dispatchers.Default) {
+        shoppingPlanDao.insert(InCartProductData(shoppingPlan.id!!, product.id!!, true, quantity))
     }
 
-    suspend fun moveToCart(product: Product) = withContext(Dispatchers.Default) {
-        productDao.moveToCart(product.id(), true, false)
-    }
-
-    suspend fun removeFromCart(products: List<Product>) = withContext(Dispatchers.Default) {
+    suspend fun removeFromCart(products: List<InCartProductData>) = withContext(Dispatchers.Default) {
         for (product in products) {
-            productDao.moveToCart(product.id(), false, false)
+            shoppingPlanDao.delete(product)
         }
     }
 
@@ -81,20 +76,21 @@ class ShoppingPlanRepository constructor(private val imageService: SearchImageSe
     }
 
     suspend fun createProduct(newProduct: Product) = withContext(Dispatchers.Default) {
-        if (!productDao.containsWithName(newProduct.name())) {
+        if (!productDao.containsWithName(newProduct.name)) {
             productDao.insert(newProduct)
             return@withContext true
         }
         return@withContext false
     }
 
-    suspend fun updateProduct(oldProduct: Product, newProduct: Product) = withContext(Dispatchers.Default) {
-        val product: Product? = productDao.byName(newProduct.name())
+    suspend fun updateProduct(newProduct: Product) = withContext(Dispatchers.Default) {
+        val product: Product? = productDao.byName(newProduct.name)
 
-        if (product == null || product.id() == oldProduct.id()) {
-            productDao.update(oldProduct.id(), newProduct.name(), newProduct.category(), newProduct.image())
+        if (product == null || product.id == newProduct.id) {
+            productDao.update(newProduct)
             return@withContext true
         }
+
         return@withContext false
     }
 
@@ -102,7 +98,7 @@ class ShoppingPlanRepository constructor(private val imageService: SearchImageSe
      * Category
      */
     suspend fun addCategory(category: Category) = withContext(Dispatchers.Default) {
-        if (!categoryDao.contains(category.name())) {
+        if (!categoryDao.containsByName(category.name)) {
             categoryDao.insert(category)
             return@withContext true
         }
@@ -110,17 +106,17 @@ class ShoppingPlanRepository constructor(private val imageService: SearchImageSe
     }
 
     suspend fun renameCategory(category: Category, newName: String) = withContext(Dispatchers.Default) {
-        if (!categoryDao.contains(newName)) {
-            categoryDao.rename(category.name(), newName)
-            productDao.updateCategory(category.name(), newName)
+        if (!categoryDao.containsByName(newName)) {
+            categoryDao.rename(category.id, newName)
             return@withContext true
         }
         return@withContext false
     }
 
     suspend fun deleteCategory(category: Category) = withContext(Dispatchers.Default) {
-        if (!productDao.containsWithCategory(category.name())) {
+        if (categoryDao.containsById(category.id)) {
             categoryDao.delete(category)
+            productDao.deleteProductsOfCategory(category.id)
             return@withContext true
         }
         return@withContext false
