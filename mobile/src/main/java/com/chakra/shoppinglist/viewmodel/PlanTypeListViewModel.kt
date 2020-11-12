@@ -26,9 +26,10 @@ class PlanTypeListViewModel(repository: ShoppingPlanRepository,
         }
     }
 
-    fun addPlan(planName: String, planType: ShoppingPlanType) {
-        // TODO: do handle database changes
-        shoppingPlanAddedLiveData.value = ShoppingPlan(planName, planType)
+    fun addPlan(planName: String, planType: ShoppingPlanType?) {
+        viewModelScope.launch {
+            shoppingPlanAddedLiveData.value = repository.createPlan(ShoppingPlan(planName, planType?.id))
+        }
     }
 
     init {

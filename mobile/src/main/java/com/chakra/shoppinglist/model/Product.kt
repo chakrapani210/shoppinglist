@@ -16,7 +16,6 @@ class Product(var name: String,
               var currencySymbol: String,
               var categoryId: Long,
               @field:PrimaryKey(autoGenerate = true) val id: Long? = null) : Serializable {
-
     val isValid: Boolean
         get() = !TextUtils.isEmpty(name)
 }

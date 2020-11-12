@@ -3,7 +3,6 @@ package com.chakra.shoppinglist.fragments
 import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,13 +10,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.chakra.shoppinglist.R
 import com.chakra.shoppinglist.base.BaseFragment
-import com.chakra.shoppinglist.model.Product
+import com.chakra.shoppinglist.model.ProductWithFullData
 import com.chakra.shoppinglist.model.ShoppingPlan
 import com.chakra.shoppinglist.utils.Analytics
 import com.chakra.shoppinglist.viewmodel.ShoppingPlanViewModel
@@ -57,7 +56,7 @@ class ShoppingCartViewFragment : BaseFragment() {
         val analytics = Analytics(requireContext())
         analytics.appLaunched()
 
-        val layoutManager = GridLayoutManager(context, 2)
+        val layoutManager = LinearLayoutManager(context)
         product_list.layoutManager = layoutManager
         adapter = ShoppingPlanAdapter()
         product_list.adapter = adapter
@@ -76,12 +75,14 @@ class ShoppingCartViewFragment : BaseFragment() {
 
     override fun getTitle() = getString(R.string.toolbar_title_main)
 
-    fun onProductSelected(product: Product?) {
-        product!!.toggleSelection()
-        viewModel.setSelectedProduct(product)
+    fun onProductSelected(product: ProductWithFullData?) {
+        product?.let {
+            it.toggleSelection()
+            viewModel.setSelectedProduct(it)
+        }
     }
 
-    fun onShare(products: List<Product>?) {
+    fun onShare(products: List<ProductWithFullData>?) {
         products?.let {
             val intent = Intent()
             intent.action = Intent.ACTION_SEND
@@ -96,11 +97,11 @@ class ShoppingCartViewFragment : BaseFragment() {
         findNavController().navigate(R.id.action_shoppingCartViewScreen_to_addProductScreen)
     }
 
-    private fun shareContent(products: List<Product>): String? {
+    private fun shareContent(products: List<ProductWithFullData>): String? {
         val result = StringBuilder()
         var lastCategory = ""
-        for (product in products) {
-            if (!product.isSelected) {
+        /*for (product in products) {
+            if (!product.inCartProductData.selected) {
                 if (!TextUtils.equals(product.category(), lastCategory)) {
                     lastCategory = product.category()
                     if (result.length != 0) {
@@ -110,12 +111,12 @@ class ShoppingCartViewFragment : BaseFragment() {
                 }
                 result.append("   - ").append(product.name()).append("\n")
             }
-        }
+        }*/
         return result.toString()
     }
 
 
-    private fun updateList(products: List<Product>?) {
+    private fun updateList(products: List<ProductWithFullData>?) {
         products?.let {
             if (it.isEmpty()) {
                 //disableToolbarAction()
@@ -132,10 +133,10 @@ class ShoppingCartViewFragment : BaseFragment() {
     }
 
     inner class ShoppingPlanAdapter : RecyclerView.Adapter<ViewHolder>() {
-        private var productsList: List<Product>? = null
+        private var productsList: List<ProductWithFullData>? = null
         private var imageLoader = Glide.with(context!!)
 
-        fun updateList(list: List<Product>?) {
+        fun updateList(list: List<ProductWithFullData>?) {
             this.productsList = list
             notifyDataSetChanged()
         }
@@ -157,11 +158,11 @@ class ShoppingCartViewFragment : BaseFragment() {
         var name: TextView = view.findViewById(R.id.product_name)
         var check: ImageView = view.findViewById(R.id.product_check)
 
-        fun bind(product: Product, imageLoader: RequestManager) {
+        fun bind(product: ProductWithFullData, imageLoader: RequestManager) {
             itemView.setOnClickListener {
                 onProductSelected(product)
             }
-            if (product.isSelected) {
+            if (product.inCartProductData.selected) {
                 row.setBackgroundColor(context!!.resources.getColor(R.color.item_selected))
                 name.paintFlags = (name.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG)
                 check.visibility = View.VISIBLE
@@ -171,9 +172,9 @@ class ShoppingCartViewFragment : BaseFragment() {
                 check.visibility = View.GONE
             }
 
-            name.text = product.name()
+            name.text = product.product.name
 
-            imageLoader.load(product.image()).into(image)
+            imageLoader.load(product.product.image).into(image)
         }
     }
 }

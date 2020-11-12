@@ -7,35 +7,18 @@ import androidx.room.Relation
 import java.io.Serializable
 import java.util.*
 
-enum class ShoppingPlanStatus {
-    OPEN,
-    DONE,
-    DELETED
-}
-
 @Entity
-data class ShoppingPlanType(@field:PrimaryKey(autoGenerate = true) val id: Long,
+data class ShoppingPlanType(@field:PrimaryKey(autoGenerate = true) val id: Long?,
                             val name: String,
+                            val default: Boolean,
                             val image: String?)
 
 @Entity
 data class ShoppingPlan(val name: String,
-                        val shoppingPlanTypeId: Long,
-                        val statusId: Int,
-                        val createdDate: Calendar,
-                        val lastModifiedData: Calendar,
-                        @field:PrimaryKey(autoGenerate = true) val id: Long? = null) : Serializable {
-
-    var status: ShoppingPlanStatus = ShoppingPlanStatus.values()[this.statusId]
-
-    constructor(name: String,
-                shoppingPlanTypeId: Long,
-                status: ShoppingPlanStatus = ShoppingPlanStatus.OPEN,
-                lastModifiedData: Calendar = Calendar.getInstance(),
-                createdDate: Calendar = Calendar.getInstance(),
-                id: Long? = null)
-            : this(name, shoppingPlanTypeId, status.ordinal, createdDate, lastModifiedData, id)
-
+                        var shoppingPlanTypeId: Long?,
+                        val createdDate: Calendar = Calendar.getInstance(),
+                        val lastModifiedData: Calendar = Calendar.getInstance(),
+                        @field:PrimaryKey(autoGenerate = true) var id: Long? = null) : Serializable {
     val isValid: Boolean
         get() = name.isNullOrEmpty()
 }
@@ -46,9 +29,15 @@ data class ShoppingPlan(val name: String,
 @Entity
 data class InCartProductData(val planId: Long,
                              val productId: Long,
-                             val selected: Boolean,
+                             var selected: Boolean,
                              val quantity: Float,
                              @field:PrimaryKey(autoGenerate = true) val id: Long? = null)
+
+@Entity
+data class InCartProductCountData(val planId: Long?,
+                                  val totalItems: Int,
+                                  val doneCount: Int,
+                                  @field:PrimaryKey(autoGenerate = true) val id: Long? = null)
 
 data class ProductWithFullData(
         @Embedded val product: Product,
@@ -57,7 +46,11 @@ data class ProductWithFullData(
                 entityColumn = "productId"
         )
         val inCartProductData: InCartProductData
-)
+) {
+    fun toggleSelection() {
+        inCartProductData.selected = !inCartProductData.selected
+    }
+}
 
 data class ShoppingPlanWithCart(
         @Embedded val shoppingPlan: ShoppingPlan,
@@ -66,7 +59,28 @@ data class ShoppingPlanWithCart(
                 parentColumn = "id",
                 entityColumn = "planId"
         )
-        val cart: List<ProductWithFullData>
+        val cart: List<ProductWithFullData>,
+
+        @Relation(
+                parentColumn = "shoppingPlanTypeId",
+                entityColumn = "id"
+        )
+        val planType: ShoppingPlanType
+)
+
+data class ShoppingPlanCartListItemData(
+        @Embedded val shoppingPlan: ShoppingPlan,
+        @Relation(
+                parentColumn = "id",
+                entityColumn = "planId"
+        )
+        val inCartProductCountData: InCartProductCountData,
+
+        @Relation(
+                parentColumn = "shoppingPlanTypeId",
+                entityColumn = "id"
+        )
+        val planType: ShoppingPlanType
 )
 
 /**

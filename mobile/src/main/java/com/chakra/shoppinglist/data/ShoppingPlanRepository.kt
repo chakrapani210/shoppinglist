@@ -126,4 +126,15 @@ class ShoppingPlanRepository constructor(private val imageService: SearchImageSe
     suspend fun searchImage(query: String) = withContext(Dispatchers.Default) {
         imageService.searchImages(query)
     }
+
+    suspend fun createPlan(shoppingPlan: ShoppingPlan, image: String?): ShoppingPlan = withContext(Dispatchers.Default) {
+        if (shoppingPlan.shoppingPlanTypeId == null) {
+            val planTypeId = shoppingPlanDao.insert(ShoppingPlanType(null, shoppingPlan.name, false, image))
+            shoppingPlan.shoppingPlanTypeId = planTypeId
+        }
+        shoppingPlan.id = shoppingPlanDao.insert(shoppingPlan)
+
+        shoppingPlanDao.insert(InCartProductCountData(shoppingPlan.id, 0, 0))
+        return@withContext shoppingPlan
+    }
 }

@@ -7,13 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.chakra.shoppinglist.R
 import com.chakra.shoppinglist.base.BaseFragment
 import com.chakra.shoppinglist.model.ShoppingPlanType
@@ -38,12 +40,12 @@ class AddPlanFragment : BaseFragment() {
         planList.adapter = adapter
 
         addButton.setOnClickListener {
-            onAddPlan(planNameEditText.text.toString())
+            onAddPlanWithName(planNameEditText.text.toString())
         }
 
         planNameEditText.setOnEditorActionListener { _: TextView, actionId: Int, event: KeyEvent ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                onAddPlan(planNameEditText.text.toString())
+                onAddPlanWithName(planNameEditText.text.toString())
                 return@setOnEditorActionListener true
             }
             return@setOnEditorActionListener false
@@ -55,9 +57,9 @@ class AddPlanFragment : BaseFragment() {
 
         viewModel.shoppingPlanAddedLiveData.observe(viewLifecycleOwner) { shoppingPlan ->
             shoppingPlan?.let {
+                moveToPreviousScreen()
                 findNavController().navigate(R.id.action_addPlanScreen_to_shoppingCartViewScreen,
                         ShoppingCartViewFragment.getDataBundle(shoppingPlan))
-                viewModel.shoppingPlanAddedLiveData.value = null
             }
         }
 
@@ -80,8 +82,8 @@ class AddPlanFragment : BaseFragment() {
 
     override fun getTitle() = getString(R.string.add_plan_screen_label)
 
-    private fun onAddPlan(planName: String) {
-        viewModel.addPlan(planName, ShoppingPlanType.OTHER)
+    private fun onAddPlanWithName(planName: String) {
+        viewModel.addPlan(planName, null)
     }
 
     private fun onAddPlan(planType: ShoppingPlanType) {
@@ -90,6 +92,7 @@ class AddPlanFragment : BaseFragment() {
 
     inner class PlanTypeListAdapter : RecyclerView.Adapter<ViewHolder>() {
         private var planTypeList: List<ShoppingPlanType>? = null
+        private val imageLoader = Glide.with(context!!)
 
         fun setList(list: List<ShoppingPlanType>?) {
             this.planTypeList = list
@@ -102,7 +105,7 @@ class AddPlanFragment : BaseFragment() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.bind(planTypeList!![position])
+            holder.bind(planTypeList!![position], imageLoader)
         }
 
         override fun getItemCount() = planTypeList?.size ?: 0
@@ -110,14 +113,15 @@ class AddPlanFragment : BaseFragment() {
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var cardView: CardView = view.findViewById(R.id.cardView)
+        var background: ImageView = view.findViewById(R.id.background)
         var label: TextView = view.findViewById(R.id.label)
 
-        fun bind(planType: ShoppingPlanType) {
+        fun bind(planType: ShoppingPlanType, imageLoader: RequestManager) {
             itemView.setOnClickListener {
                 onAddPlan(planType)
             }
-            planType.imageResourceId.let {
-                cardView.background = ContextCompat.getDrawable(context!!, it)
+            planType.image?.let {
+                imageLoader.load(it).into(background)
             }
             label.text = planType.name
         }

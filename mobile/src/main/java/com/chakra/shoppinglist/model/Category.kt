@@ -8,9 +8,13 @@ import java.io.Serializable
 
 @Entity
 class Category(val name: String,
-               val image: String,
-               val default: Boolean,
+               val image: String? = null,
+               val default: Boolean = true,
                @field:PrimaryKey(autoGenerate = true) val id: Long? = null) : Serializable {
+    companion object {
+        fun withId(id: Long) = Category("", null, false, id)
+    }
+
     fun name(): String {
         return name
     }
@@ -26,7 +30,7 @@ class Category(val name: String,
             return false
         }
         val category = o as Category
-        return name == category.name
+        return name == category.name || id == category.id
     }
 
     override fun hashCode(): Int {

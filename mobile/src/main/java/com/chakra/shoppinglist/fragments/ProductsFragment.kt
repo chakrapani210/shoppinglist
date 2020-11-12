@@ -14,7 +14,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.chakra.shoppinglist.R
 import com.chakra.shoppinglist.base.BaseFragment
+import com.chakra.shoppinglist.model.Category
 import com.chakra.shoppinglist.model.Product
+import com.chakra.shoppinglist.model.ShoppingPlan
 import com.chakra.shoppinglist.utils.Analytics
 import com.chakra.shoppinglist.viewmodel.ProductsViewModel
 import com.chakra.shoppinglist.views.Dialogs
@@ -26,15 +28,18 @@ class ProductsFragment : BaseFragment() {
 
     companion object {
         private const val PARAM_CATEGORY = "category"
-        fun getDataBundle(category: String?): Bundle {
+        private const val PARAM_SHOPPING_PLAN = "shopping_plan"
+
+        fun getDataBundle(shoppingPlan: ShoppingPlan, category: Category): Bundle {
             val args = Bundle()
-            args.putString(PARAM_CATEGORY, category)
+            args.putSerializable(PARAM_CATEGORY, category)
+            args.putSerializable(PARAM_SHOPPING_PLAN, shoppingPlan)
             return args
         }
 
-        fun create(category: String?): ProductsFragment {
+        fun create(shoppingPlan: ShoppingPlan, category: Category): ProductsFragment {
             val fragment = ProductsFragment()
-            fragment.arguments = getDataBundle(category)
+            fragment.arguments = getDataBundle(shoppingPlan, category)
             return fragment
         }
     }
@@ -76,7 +81,10 @@ class ProductsFragment : BaseFragment() {
 
     override fun onStart() {
         super.onStart()
-        viewModel.reloadProducts(arguments?.getString(PARAM_CATEGORY, "") ?: "")
+        arguments?.let {
+            viewModel.init(it.getSerializable(PARAM_SHOPPING_PLAN) as ShoppingPlan,
+                    it.getSerializable(PARAM_CATEGORY) as Category)
+        }
     }
 
     override fun getTitle(): String = arguments?.getString(PARAM_CATEGORY, "") ?: ""
@@ -97,7 +105,7 @@ class ProductsFragment : BaseFragment() {
                 getString(R.string.button_remove)
         )
         val dialogs = Dialogs(context)
-        dialogs.options(product.name(), options) { option: Int ->
+        dialogs.options(product.name, options) { option: Int ->
             if (option == 0) {
                 editProduct(product)
             } else if (option == 1) {
@@ -113,7 +121,7 @@ class ProductsFragment : BaseFragment() {
 
     private fun confirmRemoveProduct(product: Product) {
         val dialogs = Dialogs(context)
-        dialogs.confirmation(product.name(), getString(R.string.dialog_remove_product)) {
+        dialogs.confirmation(product.name, getString(R.string.dialog_remove_product)) {
             removeProduct(product)
         }
     }
@@ -152,8 +160,8 @@ class ProductsFragment : BaseFragment() {
             itemView.setOnClickListener {
                 onProductSelected(product)
             }
-            name!!.text = product.name()
-            imageLoader.load(product.image()).into(image!!)
+            name!!.text = product.name
+            imageLoader.load(product.image).into(image!!)
             options!!.setOnClickListener { v: View? -> onProductsOptions(product) }
         }
     }

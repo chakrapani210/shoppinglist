@@ -70,9 +70,9 @@ class CreateProductFragment : BaseFragment() {
         getString(R.string.toolbar_title_edit_product)
     }
 
-    private fun category(): String {
-        val element: Any = categoryList.selectedItem
-        return element.toString()
+    private fun categoryId(): String {
+        val element: Category? = viewModel.categoryList.value?.get(categoryList.selectedItem)
+        w        return element.toString()
     }
 
     fun name(): String {
@@ -140,11 +140,11 @@ class CreateProductFragment : BaseFragment() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         categoryList.adapter = adapter
         if (product != null) {
-            categoryList.setSelection(categories.indexOf(Category(product.category())))
-            name.setText(product.name())
-            loadImage(product.image())
+            categoryList.setSelection(categories.indexOf(Category.withId(product.categoryId)))
+            name.setText(product.name)
+            loadImage(product.image)
         } else if (!TextUtils.isEmpty(category)) {
-            categoryList.setSelection(categories.indexOf(Category(category)))
+            categoryList.setSelection(categories.indexOf(Category(category!!)))
         }
     }
 
