@@ -10,11 +10,10 @@ import android.widget.ImageView.ScaleType
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.chakra.shoppinglist.utils.ResourceUtils
-import java.util.*
 
 class SearchImageAdapter(private val context: Context) : BaseAdapter() {
-    private val images: MutableList<String>
-    private val imageLoader: RequestManager
+    private val images: MutableList<String> = mutableListOf()
+    private val imageLoader: RequestManager = Glide.with(context)
 
     fun loadImages(list: List<String>?) {
         images.clear()
@@ -36,7 +35,7 @@ class SearchImageAdapter(private val context: Context) : BaseAdapter() {
         return images[position].hashCode().toLong()
     }
 
-    override fun getView(position: Int, convertView: View, parent: ViewGroup): View {
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val imageView: ImageView
         if (convertView == null) {
             val size: Int = ResourceUtils.getDisplayMetrics(context).widthPixels / 3
@@ -51,10 +50,5 @@ class SearchImageAdapter(private val context: Context) : BaseAdapter() {
         }
         imageLoader.load(images[position]).into(imageView)
         return imageView
-    }
-
-    init {
-        images = ArrayList()
-        imageLoader = Glide.with(context)
     }
 }

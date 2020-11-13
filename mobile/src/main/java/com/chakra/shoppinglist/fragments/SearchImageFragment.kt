@@ -77,6 +77,7 @@ class SearchImageFragment : BaseFragment() {
     private fun onImageSelected(imageSelection: String) {
         (requireActivity() as ShoppingPlannerActivity)
                 .commonViewModel.setSearchImageSelected(imageSelection)
+        moveToPreviousScreen()
     }
 
     private fun onClose() {

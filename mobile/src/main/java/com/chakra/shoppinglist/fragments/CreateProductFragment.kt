@@ -238,12 +238,16 @@ class CreateProductFragment : BaseFragment() {
         if (TextUtils.isEmpty(name)) {
             missingName()
         } else {
-            val oldProduct: Product? = arguments?.getSerializable(PARAM_PRODUCT) as Product
-            val newProduct = Product(name, image, oldProduct?.isTemplate ?: false,
-                    oldProduct?.categoryId, oldProduct?.price, oldProduct?.id)
+            val oldProduct: Product? = arguments?.getSerializable(PARAM_PRODUCT) as Product?
+
             if (oldProduct != null) {
-                viewModel.updateProduct(newProduct)
+                oldProduct.apply {
+                    this.name = name
+                    this.image = image
+                }
+                viewModel.updateProduct(oldProduct)
             } else {
+                val newProduct = Product(name, image, false, categoryId)
                 viewModel.createProduct(newProduct)
             }
         }
