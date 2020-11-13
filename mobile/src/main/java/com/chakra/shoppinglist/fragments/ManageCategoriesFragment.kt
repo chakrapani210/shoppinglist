@@ -83,7 +83,7 @@ class ManageCategoriesFragment : BaseFragment() {
         var name: TextView? = view.findViewById(R.id.categoryName)
 
         fun bind(category: Category) {
-            name!!.text = category.name()
+            name!!.text = category.name
 
             itemView.setOnClickListener { v: View? ->
                 onCategorySelected(category)
@@ -98,7 +98,7 @@ class ManageCategoriesFragment : BaseFragment() {
         )
 
         val dialogs = Dialogs(requireContext())
-        dialogs.options(category.name(), options) { option: Int ->
+        dialogs.options(category.name, options) { option: Int ->
             if (option == 0) {
                 requestCategoryName(category)
             } else if (option == 1) {
@@ -110,14 +110,14 @@ class ManageCategoriesFragment : BaseFragment() {
     private fun requestCategoryName(category: Category) {
         val dialogs = Dialogs(requireContext())
         dialogs.input(requireContext(), getString(R.string.label_product_edit_category),
-                category.name(), OnInputConfirmed { input: String ->
+                category.name, OnInputConfirmed { input: String ->
             viewModel.renameCategory(category, input)
         })
     }
 
     private fun confirmRemoveCategory(category: Category) {
         val dialogs = Dialogs(requireContext())
-        dialogs.confirmation(category.name(), getString(R.string.dialog_remove_category)) {
+        dialogs.confirmation(category.name, getString(R.string.dialog_remove_category)) {
             viewModel.deleteCategory(category)
         }
     }

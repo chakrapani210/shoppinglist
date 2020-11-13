@@ -12,9 +12,7 @@ class ShoppingPlanRepository constructor(private val imageService: SearchImageSe
                                          private val productDao: ProductDao,
                                          private val categoryDao: CategoryDao) {
 
-    suspend fun getShoppingPlanList() = withContext(Dispatchers.Default) {
-        shoppingPlanDao.all()
-    }
+    fun getShoppingPlanList() = shoppingPlanDao.all()
 
     suspend fun getShoppingSuggestionsTypeList() = withContext(Dispatchers.Default) {
         shoppingPlanDao.getAllShoppingPlanTypes()
@@ -36,9 +34,7 @@ class ShoppingPlanRepository constructor(private val imageService: SearchImageSe
         productDao.delete(product)
     }
 
-    suspend fun productsInShoppingPlan(shoppingPlan: ShoppingPlan) = withContext(Dispatchers.Default) {
-        sortList(shoppingPlanDao.getAllProductsOf(shoppingPlan.id)?.cart)
-    }
+    fun productsInShoppingPlan(shoppingPlan: ShoppingPlan?) = shoppingPlanDao.getAllProductsOf(shoppingPlan?.id)
 
     private fun sortList(list: List<ProductWithFullData>?): List<ProductWithFullData>? {
         return list?.sortedWith(Comparator { p1: ProductWithFullData, p2: ProductWithFullData ->
@@ -72,7 +68,7 @@ class ShoppingPlanRepository constructor(private val imageService: SearchImageSe
 
     suspend fun getAllCategories() = withContext(Dispatchers.Default) {
         var categories = categoryDao.all()
-        return@withContext categories?.sortedWith(Comparator { c1: Category, c2: Category -> c1.name().compareTo(c2.name()) })
+        return@withContext categories?.sortedWith(Comparator { c1: Category, c2: Category -> c1.name.compareTo(c2.name) })
     }
 
     suspend fun createProduct(newProduct: Product) = withContext(Dispatchers.Default) {
@@ -130,11 +126,16 @@ class ShoppingPlanRepository constructor(private val imageService: SearchImageSe
     suspend fun createPlan(shoppingPlan: ShoppingPlan, image: String?): ShoppingPlan = withContext(Dispatchers.Default) {
         if (shoppingPlan.shoppingPlanTypeId == null) {
             val planTypeId = shoppingPlanDao.insert(ShoppingPlanType(null, shoppingPlan.name, false, image))
-            shoppingPlan.shoppingPlanTypeId = planTypeId
+            shoppingPlan.shoppingPlanTypeId = planTypeId?.get(0)
         }
-        shoppingPlan.id = shoppingPlanDao.insert(shoppingPlan)
+        shoppingPlan.id = shoppingPlanDao.insert(shoppingPlan)?.get(0)
 
         shoppingPlanDao.insert(InCartProductCountData(shoppingPlan.id, 0, 0))
         return@withContext shoppingPlan
+    }
+
+    suspend fun searchShoppingTypeList(searchText: String?)
+            : List<ShoppingPlanType>? = withContext(Dispatchers.Default) {
+        return@withContext shoppingPlanDao.searchShoppingTypeList(searchText)
     }
 }

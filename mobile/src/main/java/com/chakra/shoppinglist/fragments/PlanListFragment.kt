@@ -32,7 +32,8 @@ class PlanListFragment : BaseFragment() {
     override fun initialize() {
         // Start wearable service
         val intent = Intent(context, WearableService::class.java)
-        requireActivity().startService(intent)
+        // TODO: start Wearable service
+        //requireActivity().startService(intent)
 
         val layoutManager = GridLayoutManager(context, 2)
         planList.layoutManager = layoutManager

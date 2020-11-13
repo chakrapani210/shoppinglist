@@ -61,8 +61,8 @@ class ShoppingCartViewFragment : BaseFragment() {
         adapter = ShoppingPlanAdapter()
         product_list.adapter = adapter
 
-        viewModel.productsInPlan.observe(viewLifecycleOwner) { list ->
-            updateList(list)
+        viewModel.productsInPlan.observe(viewLifecycleOwner) { planWIthCart ->
+            updateList(planWIthCart?.cart)
         }
 
     }
@@ -77,8 +77,7 @@ class ShoppingCartViewFragment : BaseFragment() {
 
     fun onProductSelected(product: ProductWithFullData?) {
         product?.let {
-            it.toggleSelection()
-            viewModel.setSelectedProduct(it)
+            viewModel.toggleSelection(it)
         }
     }
 

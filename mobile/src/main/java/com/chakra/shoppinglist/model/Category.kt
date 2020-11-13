@@ -7,20 +7,16 @@ import androidx.room.Relation
 import java.io.Serializable
 
 @Entity
-class Category(val name: String,
-               val image: String? = null,
-               val default: Boolean = true,
-               @field:PrimaryKey(autoGenerate = true) val id: Long? = null) : Serializable {
+class Category(var name: String,
+               var image: String? = null,
+               var isTemplate: Boolean = true,
+               @field:PrimaryKey(autoGenerate = true) var id: Long? = null) : Serializable {
     companion object {
         fun withId(id: Long) = Category("", null, false, id)
     }
 
-    fun name(): String {
-        return name
-    }
-
     override fun toString(): String {
-        return name()
+        return name
     }
 
     override fun equals(o: Any?): Boolean {
@@ -39,10 +35,10 @@ class Category(val name: String,
 }
 
 data class CategoryWithProducts(
-        @Embedded val category: Category,
+        @Embedded var category: Category,
         @Relation(
                 parentColumn = "id",
                 entityColumn = "categoryId"
         )
-        val cart: List<Product>
+        var cart: List<Product>
 )

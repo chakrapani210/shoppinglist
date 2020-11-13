@@ -8,16 +8,16 @@ import java.io.Serializable
 import java.util.*
 
 @Entity
-data class ShoppingPlanType(@field:PrimaryKey(autoGenerate = true) val id: Long?,
-                            val name: String,
-                            val default: Boolean,
-                            val image: String?)
+data class ShoppingPlanType(@field:PrimaryKey(autoGenerate = true) var id: Long?,
+                            var name: String,
+                            var isTemplate: Boolean,
+                            var image: String?)
 
 @Entity
-data class ShoppingPlan(val name: String,
+data class ShoppingPlan(var name: String,
                         var shoppingPlanTypeId: Long?,
-                        val createdDate: Calendar = Calendar.getInstance(),
-                        val lastModifiedData: Calendar = Calendar.getInstance(),
+                        var createdDate: Calendar = Calendar.getInstance(),
+                        var lastModifiedData: Calendar = Calendar.getInstance(),
                         @field:PrimaryKey(autoGenerate = true) var id: Long? = null) : Serializable {
     val isValid: Boolean
         get() = name.isNullOrEmpty()
@@ -26,26 +26,24 @@ data class ShoppingPlan(val name: String,
 /**
  * This hold the Products that are added to Plan
  */
-@Entity
-data class InCartProductData(val planId: Long,
-                             val productId: Long,
+@Entity(primaryKeys = ["planId", "productId"])
+data class InCartProductData(var planId: Long,
+                             var productId: Long,
                              var selected: Boolean,
-                             val quantity: Float,
-                             @field:PrimaryKey(autoGenerate = true) val id: Long? = null)
+                             var quantity: Float)
 
 @Entity
-data class InCartProductCountData(val planId: Long?,
-                                  val totalItems: Int,
-                                  val doneCount: Int,
-                                  @field:PrimaryKey(autoGenerate = true) val id: Long? = null)
+data class InCartProductCountData(@field:PrimaryKey var planId: Long?,
+                                  var totalItems: Int,
+                                  var doneCount: Int)
 
 data class ProductWithFullData(
-        @Embedded val product: Product,
+        @Embedded var inCartProductData: InCartProductData,
         @Relation(
-                parentColumn = "id",
-                entityColumn = "productId"
+                parentColumn = "productId",
+                entityColumn = "id"
         )
-        val inCartProductData: InCartProductData
+        var product: Product
 ) {
     fun toggleSelection() {
         inCartProductData.selected = !inCartProductData.selected
@@ -53,34 +51,34 @@ data class ProductWithFullData(
 }
 
 data class ShoppingPlanWithCart(
-        @Embedded val shoppingPlan: ShoppingPlan,
+        @Embedded var shoppingPlan: ShoppingPlan,
         @Relation(
                 entity = InCartProductData::class,
                 parentColumn = "id",
                 entityColumn = "planId"
         )
-        val cart: List<ProductWithFullData>,
+        var cart: List<ProductWithFullData>,
 
         @Relation(
                 parentColumn = "shoppingPlanTypeId",
                 entityColumn = "id"
         )
-        val planType: ShoppingPlanType
+        var planType: ShoppingPlanType
 )
 
 data class ShoppingPlanCartListItemData(
-        @Embedded val shoppingPlan: ShoppingPlan,
+        @Embedded var shoppingPlan: ShoppingPlan,
         @Relation(
                 parentColumn = "id",
                 entityColumn = "planId"
         )
-        val inCartProductCountData: InCartProductCountData,
+        var inCartProductCountData: InCartProductCountData,
 
         @Relation(
                 parentColumn = "shoppingPlanTypeId",
                 entityColumn = "id"
         )
-        val planType: ShoppingPlanType
+        var planType: ShoppingPlanType
 )
 
 /**
@@ -88,5 +86,5 @@ data class ShoppingPlanCartListItemData(
  */
 /*
 @Entity
-data class PlanCategoryProductList(val planId: Long,
-                               val categoryId: Long)*/
+data class PlanCategoryProductList(var planId: Long,
+                               var categoryId: Long)*/

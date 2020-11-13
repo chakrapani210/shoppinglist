@@ -15,27 +15,24 @@ class PlanTypeListViewModel(repository: ShoppingPlanRepository,
     val shoppingPlanAddedLiveData = MutableLiveData<ShoppingPlan>()
 
     fun filterSuggestions(searchText: String?) {
-        if (searchText == null) {
-            shoppingTypeSuggestions.value = originalList
-            return
-        }
-        shoppingTypeSuggestions.value?.let {
-            shoppingTypeSuggestions.value = it.filter { shoppingPlanType ->
-                getApplication<Application>().getString(shoppingPlanType.nameResId).contains(searchText, true)
+        viewModelScope.launch() {
+            if (searchText.isNullOrEmpty()) {
+                shoppingTypeSuggestions.value = originalList
             }
+            shoppingTypeSuggestions.value = repository.searchShoppingTypeList(searchText)
         }
     }
 
     fun addPlan(planName: String, planType: ShoppingPlanType?) {
         viewModelScope.launch {
-            shoppingPlanAddedLiveData.value = repository.createPlan(ShoppingPlan(planName, planType?.id))
+            shoppingPlanAddedLiveData.value = repository.createPlan(ShoppingPlan(planName, planType?.id), null)
         }
     }
 
     init {
         viewModelScope.launch {
             originalList = repository.getShoppingSuggestionsTypeList()
-            shoppingTypeSuggestions.value = repository.getShoppingSuggestionsTypeList()
+            shoppingTypeSuggestions.value = originalList
         }
     }
 }

@@ -2,6 +2,7 @@ package com.chakra.shoppinglist.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
 import com.chakra.shoppinglist.data.ShoppingPlanRepository
 import com.chakra.shoppinglist.model.ProductWithFullData
@@ -10,15 +11,14 @@ import kotlinx.coroutines.launch
 
 class ShoppingPlanViewModel(application: Application,
                             repository: ShoppingPlanRepository) : BaseViewModel(application, repository) {
-    val productsInPlan = MutableLiveData<List<ProductWithFullData>>()
+    private val shoppingPlanLiveData = MutableLiveData<ShoppingPlan?>()
+    val productsInPlan = Transformations.switchMap(shoppingPlanLiveData) {
+        repository.productsInShoppingPlan(it)
+    }
     lateinit var shoppingPlan: ShoppingPlan
 
     fun reloadProductsInPlan(shoppingPlan: ShoppingPlan? = null) {
-        viewModelScope.launch {
-            shoppingPlan?.let {
-                productsInPlan.value = repository.productsInShoppingPlan(it)
-            }
-        }
+        shoppingPlanLiveData.value = shoppingPlan
     }
 
     /*fun removeProduct(products: List<Product>) {
@@ -27,8 +27,9 @@ class ShoppingPlanViewModel(application: Application,
         }
     }*/
 
-    fun setSelectedProduct(product: ProductWithFullData) {
+    fun toggleSelection(product: ProductWithFullData) {
         viewModelScope.launch {
+            product.toggleSelection()
             repository.updateCartItem(product.inCartProductData)
             reloadProductsInPlan()
         }

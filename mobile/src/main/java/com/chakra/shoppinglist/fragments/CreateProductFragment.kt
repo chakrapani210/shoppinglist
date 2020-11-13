@@ -70,9 +70,9 @@ class CreateProductFragment : BaseFragment() {
         getString(R.string.toolbar_title_edit_product)
     }
 
-    private fun categoryId(): String {
-        val element: Category? = viewModel.categoryList.value?.get(categoryList.selectedItem)
-        w        return element.toString()
+    private fun categoryId(): Long? {
+        val element: Category? = viewModel.categoryList.value?.get(categoryList.selectedItemPosition)
+        return element?.id
     }
 
     fun name(): String {
@@ -90,7 +90,7 @@ class CreateProductFragment : BaseFragment() {
         }
 
         buttonAction.setOnClickListener {
-            onAction(category(), name(), selectedImage, productAddToCard.isChecked)
+            onAction(categoryId(), name(), selectedImage, productAddToCard.isChecked)
         }
 
         productImage.setOnClickListener {
@@ -107,27 +107,27 @@ class CreateProductFragment : BaseFragment() {
 
         viewModel.categoryList.observe(viewLifecycleOwner) { list ->
             list?.let {
-                var category: String? = null
+                var category: Category? = null
                 var product: Product? = null
                 arguments?.let { bundle ->
-                    category = bundle.getString(PARAM_CATEGORY, "")
+                    category = bundle.getSerializable(PARAM_CATEGORY) as Category?
                     product = bundle.getSerializable(PARAM_PRODUCT) as Product?
                 }
                 loadCategoryList(it, category, product)
             }
         }
 
-        viewModel.updateResult.observe(viewLifecycleOwner, {
+        viewModel.updateResult.observe(viewLifecycleOwner) {
             it?.let {
                 requireActivity().onBackPressed()
             }
-        })
+        }
 
-        (requireActivity() as ShoppingPlannerActivity).commonViewModel.searchImageSelected.observe(viewLifecycleOwner, {
+        (requireActivity() as ShoppingPlannerActivity).commonViewModel.searchImageSelected.observe(viewLifecycleOwner) {
             it?.let {
                 processSearchImage(it)
             }
-        })
+        }
     }
 
     override fun onStart() {
@@ -135,16 +135,18 @@ class CreateProductFragment : BaseFragment() {
         viewModel.reloadCategories()
     }
 
-    private fun loadCategoryList(categories: List<Category?>, category: String?, product: Product?) {
-        val adapter: ArrayAdapter<Category?> = ArrayAdapter<Category?>(requireContext(), android.R.layout.simple_spinner_item, categories)
+    private fun loadCategoryList(categories: List<Category?>, category: Category?, product: Product?) {
+        val adapter: ArrayAdapter<Category?> = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, categories)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         categoryList.adapter = adapter
         if (product != null) {
-            categoryList.setSelection(categories.indexOf(Category.withId(product.categoryId)))
+            categoryList.setSelection(categories.indexOf(category))
             name.setText(product.name)
             loadImage(product.image)
-        } else if (!TextUtils.isEmpty(category)) {
-            categoryList.setSelection(categories.indexOf(Category(category!!)))
+        } else if (category != null) {
+            categoryList.setSelection(categories.indexOf(category))
+        } else {
+            categoryList.setSelection(0)
         }
     }
 
@@ -230,14 +232,15 @@ class CreateProductFragment : BaseFragment() {
         findNavController().navigate(R.id.action_createProductScreen_to_manageCategoriesScreen)
     }
 
-    private fun onAction(category: String, name: String, image: String, inCart: Boolean) {
+    private fun onAction(categoryId: Long?, name: String, image: String, inCart: Boolean) {
         clearError()
 
         if (TextUtils.isEmpty(name)) {
             missingName()
         } else {
             val oldProduct: Product? = arguments?.getSerializable(PARAM_PRODUCT) as Product
-            val newProduct = Product(category, name, image, inCart, false, oldProduct.id)
+            val newProduct = Product(name, image, oldProduct?.isTemplate ?: false,
+                    oldProduct?.categoryId, oldProduct?.price, oldProduct?.id)
             if (oldProduct != null) {
                 viewModel.updateProduct(newProduct)
             } else {
