@@ -93,7 +93,8 @@ class ShoppingCartViewFragment : BaseFragment() {
     }
 
     private fun onAddProduct() {
-        findNavController().navigate(R.id.action_shoppingCartViewScreen_to_addProductScreen)
+        findNavController().navigate(R.id.action_shoppingCartViewScreen_to_addProductScreen,
+                AddProductFragment.getDataBundle(viewModel.shoppingPlan))
     }
 
     private fun shareContent(products: List<ProductWithFullData>): String? {

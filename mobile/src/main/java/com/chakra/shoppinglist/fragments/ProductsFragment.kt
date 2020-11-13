@@ -87,11 +87,7 @@ class ProductsFragment : BaseFragment() {
         }
     }
 
-    override fun getTitle(): String = arguments?.getString(PARAM_CATEGORY, "") ?: ""
-
-    fun title(): String {
-        return arguments?.getString(PARAM_CATEGORY, "") ?: ""
-    }
+    override fun getTitle(): String = viewModel.title
 
     fun onProductSelected(product: Product?) {
         viewModel.moveToCart(product!!)

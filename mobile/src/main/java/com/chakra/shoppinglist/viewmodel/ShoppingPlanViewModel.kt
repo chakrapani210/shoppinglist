@@ -13,11 +13,13 @@ class ShoppingPlanViewModel(application: Application,
                             repository: ShoppingPlanRepository) : BaseViewModel(application, repository) {
     private val shoppingPlanLiveData = MutableLiveData<ShoppingPlan?>()
     val productsInPlan = Transformations.switchMap(shoppingPlanLiveData) {
-        repository.productsInShoppingPlan(it)
+        shoppingPlan.let {
+            repository.productsInShoppingPlan(it)
+        }
     }
     lateinit var shoppingPlan: ShoppingPlan
 
-    fun reloadProductsInPlan(shoppingPlan: ShoppingPlan? = null) {
+    fun reloadProductsInPlan() {
         shoppingPlanLiveData.value = shoppingPlan
     }
 
@@ -31,7 +33,6 @@ class ShoppingPlanViewModel(application: Application,
         viewModelScope.launch {
             product.toggleSelection()
             repository.updateCartItem(product.inCartProductData)
-            reloadProductsInPlan()
         }
     }
 

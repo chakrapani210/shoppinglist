@@ -26,7 +26,7 @@ class Category(var name: String,
             return false
         }
         val category = o as Category
-        return name == category.name || id == category.id
+        return name == category.name
     }
 
     override fun hashCode(): Int {

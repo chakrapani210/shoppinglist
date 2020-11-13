@@ -16,7 +16,7 @@ interface ProductDao {
     fun containsWithName(name: String?): Boolean
 
     @Insert
-    fun insert(vararg products: Product?)
+    fun insert(vararg products: Product?): List<Long>?
 
     @Update
     fun update(product: Product)

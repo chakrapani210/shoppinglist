@@ -1,6 +1,7 @@
 package com.chakra.shoppinglist.database
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.chakra.shoppinglist.model.Category
 import com.chakra.shoppinglist.model.CategoryWithProducts
@@ -8,7 +9,7 @@ import com.chakra.shoppinglist.model.CategoryWithProducts
 @Dao
 interface CategoryDao {
     @Query("SELECT * FROM Category")
-    fun all(): List<Category>?
+    fun all(): LiveData<List<Category>?>
 
     @Query("SELECT EXISTS(SELECT * FROM Category WHERE id=:id)")
     fun containsById(id: Long?): Boolean

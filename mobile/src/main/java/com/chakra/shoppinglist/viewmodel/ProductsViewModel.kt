@@ -12,8 +12,9 @@ import kotlinx.coroutines.launch
 class ProductsViewModel(application: Application,
                         repository: ShoppingPlanRepository) : BaseViewModel(application, repository) {
     val productsLiveData = MutableLiveData<List<Product>?>()
-    private lateinit var category: Category
-    private lateinit var shoppingPlan: ShoppingPlan
+    lateinit var category: Category
+    lateinit var shoppingPlan: ShoppingPlan
+    val title get() = category.name
 
     fun init(shoppingPlan: ShoppingPlan, category: Category) {
         this.shoppingPlan = shoppingPlan

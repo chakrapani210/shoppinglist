@@ -32,6 +32,14 @@ class AddProductFragment : BaseFragment(), ViewPager.OnPageChangeListener {
     private var lastCategorySelected: String? = null
     private val viewModel: AddProductViewModel by viewModel()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (savedInstanceState == null) {
+            val shoppingPlan = arguments?.getSerializable(PARAM_SHOPPING_PLAN) as ShoppingPlan
+            viewModel.shoppingPlan = shoppingPlan
+        }
+    }
+
     override fun getTitle(): String = getString(R.string.toolbar_title_add_product)
 
     override val resourceLayoutId: Int
@@ -64,10 +72,9 @@ class AddProductFragment : BaseFragment(), ViewPager.OnPageChangeListener {
 
     private fun updateTabList(categories: List<Category?>) {
         val fragments = mutableListOf<ProductsFragment>()
-        val shoppingPlan = arguments?.getSerializable(PARAM_SHOPPING_PLAN) as ShoppingPlan
         categories.forEach {
             it?.let {
-                val fragment = ProductsFragment.create(shoppingPlan, it)
+                val fragment = ProductsFragment.create(viewModel.shoppingPlan, it)
                 fragments.add(fragment)
             }
         }
@@ -97,6 +104,6 @@ class AddProductFragment : BaseFragment(), ViewPager.OnPageChangeListener {
     private fun currentTitle(position: Int): String? {
         val adapter = pager.adapter as ProductsFragmentAdapter
         val fragment = adapter.getItem(position) as ProductsFragment
-        return fragment.title()
+        return fragment.getTitle()
     }
 }

@@ -104,7 +104,7 @@ abstract class BaseFragment : Fragment() {
 
     abstract fun getBaseViewModel(): BaseViewModel?
 
-    protected abstract fun getTitle(): String
+    abstract fun getTitle(): String
 
     open fun onFloatingButtonClicked() {
     }

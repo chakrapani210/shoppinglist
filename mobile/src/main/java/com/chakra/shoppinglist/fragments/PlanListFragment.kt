@@ -93,7 +93,13 @@ class PlanListFragment : BaseFragment() {
                 imageLoader.load(it).into(background)
             }
             planData.inCartProductCountData.apply {
-                checkBox.isChecked = (doneCount == totalItems)
+                if (totalItems > 0 && doneCount == totalItems) {
+                    checkBox.isChecked = true
+                    itemView.isEnabled = false
+                } else {
+                    checkBox.isChecked = false
+                    itemView.isEnabled = true
+                }
             }
 
             label.text = planData.shoppingPlan.name

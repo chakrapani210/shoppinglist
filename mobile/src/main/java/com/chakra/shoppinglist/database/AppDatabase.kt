@@ -1,6 +1,7 @@
 package com.chakra.shoppinglist.database
 
 import android.content.Context
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.room.Database
 import androidx.room.Room
@@ -83,14 +84,14 @@ abstract class AppDatabase : RoomDatabase() {
         val tuna = product(context, R.string.product_tuna, meatAndFish, "http://i.imgur.com/MgrEyWa.png")
 
         val milkAndCheese = Category(context.getString(R.string.category_milkAndCheese))
-        milkAndCheese.id = categoryDao.insert(condiments)?.get(0)
+        milkAndCheese.id = categoryDao.insert(milkAndCheese)?.get(0)
         val cheese = product(context, R.string.product_cheese, milkAndCheese, "http://i.imgur.com/ebP7mp2.png")
         val eggs = product(context, R.string.product_eggs, milkAndCheese, "http://i.imgur.com/aIXuDqG.png")
         val milk = product(context, R.string.product_milk, milkAndCheese, "http://i.imgur.com/ERuiwHw.png")
         val yogurt = product(context, R.string.product_yogurt, milkAndCheese, "http://i.imgur.com/mhxVBOA.png")
 
         val productDao = productDao()
-        productDao.insert( // Bathroom
+        val ids = productDao.insert( // Bathroom
                 shampoo, toiletPaper, toothbrush, toothpaste,  // Beverages
                 beer, coffee, soda, water,  // Bread & Grain Products
                 baguette, cereals, pasta, rice,  // Condiments & Others
@@ -100,6 +101,7 @@ abstract class AppDatabase : RoomDatabase() {
                 cleaningSupplies, dishwashingLiquid, garbageBags, laundryDetergent,  // Meat & Fish
                 chicken, fish, meat, tuna,  // Milk & Cheese
                 cheese, eggs, milk, yogurt)
+        Log.d(TAG, "product ID's: $ids")
     }
 
     private fun product(context: Context, @StringRes resId: Int, category: Category, imageUrl: String): Product {
@@ -111,6 +113,7 @@ abstract class AppDatabase : RoomDatabase() {
         // same time.
         @Volatile
         private var INSTANCE: AppDatabase? = null
+        const val TAG: String = "AppDatabase"
 
         @JvmStatic
         fun instance(context: Context): AppDatabase {

@@ -2,19 +2,24 @@ package com.chakra.shoppinglist.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.Transformations
 import com.chakra.shoppinglist.data.ShoppingPlanRepository
-import com.chakra.shoppinglist.model.Category
-import kotlinx.coroutines.launch
+import com.chakra.shoppinglist.model.ShoppingPlan
 
 open class AddProductViewModel(application: Application,
                                repository: ShoppingPlanRepository) : BaseViewModel(application, repository) {
-    val categoryList = MutableLiveData<List<Category>?>()
+    lateinit var shoppingPlan: ShoppingPlan
+    private val reloadCategories = MutableLiveData<Boolean>()
+    val categoryList = Transformations.switchMap(reloadCategories) {
+        if (it != null && it) {
+            repository.getAllCategories()
+        } else {
+            null
+        }
+    }
 
     fun reloadCategories() {
-        viewModelScope.launch {
-            categoryList.value = repository.getAllCategories()
-        }
+        reloadCategories.value = true
     }
 
 }

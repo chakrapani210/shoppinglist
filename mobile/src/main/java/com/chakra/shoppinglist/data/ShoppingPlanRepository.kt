@@ -1,5 +1,6 @@
 package com.chakra.shoppinglist.data
 
+import androidx.lifecycle.Transformations
 import com.chakra.shoppinglist.database.CategoryDao
 import com.chakra.shoppinglist.database.ProductDao
 import com.chakra.shoppinglist.database.ShoppingPlanDao
@@ -58,6 +59,7 @@ class ShoppingPlanRepository constructor(private val imageService: SearchImageSe
 
     suspend fun moveToCart(shoppingPlan: ShoppingPlan, product: Product, quantity: Float = 1.0f) = withContext(Dispatchers.Default) {
         shoppingPlanDao.insert(InCartProductData(shoppingPlan.id!!, product.id!!, true, quantity))
+        //shoppingPlanDao.update(InCartProductCountData(shoppingPlan.id, sho))
     }
 
     suspend fun removeFromCart(products: List<InCartProductData>) = withContext(Dispatchers.Default) {
@@ -66,9 +68,8 @@ class ShoppingPlanRepository constructor(private val imageService: SearchImageSe
         }
     }
 
-    suspend fun getAllCategories() = withContext(Dispatchers.Default) {
-        var categories = categoryDao.all()
-        return@withContext categories?.sortedWith(Comparator { c1: Category, c2: Category -> c1.name.compareTo(c2.name) })
+    fun getAllCategories() = Transformations.map(categoryDao.all()) {
+        it?.sortedWith(Comparator { c1: Category, c2: Category -> c1.name.compareTo(c2.name) })
     }
 
     suspend fun createProduct(newProduct: Product) = withContext(Dispatchers.Default) {

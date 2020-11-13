@@ -19,6 +19,7 @@ import com.bumptech.glide.RequestManager
 import com.chakra.shoppinglist.R
 import com.chakra.shoppinglist.base.BaseFragment
 import com.chakra.shoppinglist.model.ShoppingPlanType
+import com.chakra.shoppinglist.utils.closeKeyBoard
 import com.chakra.shoppinglist.viewmodel.PlanTypeListViewModel
 import kotlinx.android.synthetic.main.fragment_add_plan_layout.*
 import kotlinx.android.synthetic.main.fragment_planner_list_layout.planList
@@ -58,7 +59,7 @@ class AddPlanFragment : BaseFragment() {
         viewModel.shoppingPlanAddedLiveData.observe(viewLifecycleOwner) { shoppingPlan ->
             shoppingPlan?.let {
                 moveToPreviousScreen()
-                findNavController().navigate(R.id.action_addPlanScreen_to_shoppingCartViewScreen,
+                findNavController().navigate(R.id.action_planListScreen_to_shoppingCartViewScreen,
                         ShoppingCartViewFragment.getDataBundle(shoppingPlan))
             }
         }
@@ -83,7 +84,10 @@ class AddPlanFragment : BaseFragment() {
     override fun getTitle() = getString(R.string.add_plan_screen_label)
 
     private fun onAddPlanWithName(planName: String) {
-        viewModel.addPlan(planName, null)
+        if (planName.isNotBlank()) {
+            closeKeyBoard()
+            viewModel.addPlan(planName, null)
+        }
     }
 
     private fun onAddPlan(planType: ShoppingPlanType) {

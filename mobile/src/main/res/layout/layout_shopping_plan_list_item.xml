@@ -13,10 +13,11 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginStart="@dimen/pageMargin"
             android:layout_marginTop="24dp"
-            android:layout_marginEnd="@dimen/pageMargin">
+            android:layout_marginEnd="@dimen/pageMargin"
+            android:background="@color/colorPrimary">
 
             <ImageView
                 android:id="@+id/background"
@@ -38,7 +39,7 @@
 
             <TextView
                 android:id="@+id/label"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="8dp"
