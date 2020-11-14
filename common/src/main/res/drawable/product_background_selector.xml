@@ -15,7 +15,8 @@
         android:state_pressed="false">
 
         <shape>
-            <solid android:color="@color/item.unselected"/>
+            <!--<solid android:color="@color/item.unselected"/>-->
+            <solid android:color="@color/primary" />
         </shape>
 
     </item>

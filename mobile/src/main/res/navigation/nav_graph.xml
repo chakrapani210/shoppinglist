@@ -50,7 +50,7 @@
     </fragment>
     <fragment
         android:id="@+id/productsFragment"
-        android:name="com.chakra.shoppinglist.fragments.ProductsFragment"
+        android:name="com.chakra.shoppinglist.fragments.ProductsListFragment"
         android:label="Blank"
         tools:layout="@layout/fragment_view_category_products">
         <action

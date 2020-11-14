@@ -56,6 +56,9 @@ interface ShoppingPlanDao {
     fun delete(shoppingPlanType: ShoppingPlanType)
 
     /*** InCartProductCountData ***/
+    @Query("SELECT * FROM InCartProductCountData WHERE planId=:planId")
+    fun getInCartProductCountData(planId: Long): InCartProductCountData?
+
     @Insert
     fun insert(vararg inCartProductCountData: InCartProductCountData): List<Long>?
 

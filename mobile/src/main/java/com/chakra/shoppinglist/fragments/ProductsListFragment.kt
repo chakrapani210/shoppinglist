@@ -16,35 +16,36 @@ import com.chakra.shoppinglist.R
 import com.chakra.shoppinglist.base.BaseFragment
 import com.chakra.shoppinglist.model.Category
 import com.chakra.shoppinglist.model.Product
-import com.chakra.shoppinglist.model.ShoppingPlan
 import com.chakra.shoppinglist.utils.Analytics
+import com.chakra.shoppinglist.viewmodel.CommonViewModel
 import com.chakra.shoppinglist.viewmodel.ProductsViewModel
 import com.chakra.shoppinglist.views.Dialogs
 import kotlinx.android.synthetic.main.fragment_view_category_products.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
-class ProductsFragment : BaseFragment() {
+class ProductsListFragment : BaseFragment() {
 
     companion object {
         private const val PARAM_CATEGORY = "category"
         private const val PARAM_SHOPPING_PLAN = "shopping_plan"
 
-        fun getDataBundle(shoppingPlan: ShoppingPlan, category: Category): Bundle {
+        fun getDataBundle(category: Category): Bundle {
             val args = Bundle()
             args.putSerializable(PARAM_CATEGORY, category)
-            args.putSerializable(PARAM_SHOPPING_PLAN, shoppingPlan)
             return args
         }
 
-        fun create(shoppingPlan: ShoppingPlan, category: Category): ProductsFragment {
-            val fragment = ProductsFragment()
-            fragment.arguments = getDataBundle(shoppingPlan, category)
+        fun create(category: Category): ProductsListFragment {
+            val fragment = ProductsListFragment()
+            fragment.arguments = getDataBundle(category)
             return fragment
         }
     }
 
     private val viewModel: ProductsViewModel by viewModel()
+    private val commonViewModel: CommonViewModel by viewModel()
+
     private lateinit var adapter: ProductsAdapter
 
     override val resourceLayoutId: Int
@@ -82,8 +83,7 @@ class ProductsFragment : BaseFragment() {
     override fun onStart() {
         super.onStart()
         arguments?.let {
-            viewModel.init(it.getSerializable(PARAM_SHOPPING_PLAN) as ShoppingPlan,
-                    it.getSerializable(PARAM_CATEGORY) as Category)
+            viewModel.init(commonViewModel.shoppingPlanCartListData.value!!, it.getSerializable(PARAM_CATEGORY) as Category)
         }
     }
 
@@ -148,17 +148,22 @@ class ProductsFragment : BaseFragment() {
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var image: ImageView? = view.findViewById(R.id.product_image)
-        var name: TextView? = view.findViewById(R.id.product_name)
-        var options: View? = view.findViewById(R.id.product_options)
+        var image: ImageView = view.findViewById(R.id.product_image)
+        var name: TextView = view.findViewById(R.id.product_name)
+        var options: View = view.findViewById(R.id.product_options)
 
         fun bind(product: Product, imageLoader: RequestManager) {
             itemView.setOnClickListener {
                 onProductSelected(product)
             }
-            name!!.text = product.name
-            imageLoader.load(product.image).into(image!!)
-            options!!.setOnClickListener { v: View? -> onProductsOptions(product) }
+            if (commonViewModel.isProductAdded(product)) {
+                itemView.setBackgroundColor(context!!.resources.getColor(R.color.primary))
+            } else {
+                itemView.background = null
+            }
+            name.text = product.name
+            imageLoader.load(product.image).into(image)
+            options.setOnClickListener { v: View? -> onProductsOptions(product) }
         }
     }
 }

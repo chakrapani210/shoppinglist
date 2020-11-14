@@ -6,17 +6,17 @@ import androidx.lifecycle.viewModelScope
 import com.chakra.shoppinglist.data.ShoppingPlanRepository
 import com.chakra.shoppinglist.model.Category
 import com.chakra.shoppinglist.model.Product
-import com.chakra.shoppinglist.model.ShoppingPlan
+import com.chakra.shoppinglist.model.ShoppingPlanCartListItemData
 import kotlinx.coroutines.launch
 
 class ProductsViewModel(application: Application,
                         repository: ShoppingPlanRepository) : BaseViewModel(application, repository) {
     val productsLiveData = MutableLiveData<List<Product>?>()
     lateinit var category: Category
-    lateinit var shoppingPlan: ShoppingPlan
+    lateinit var shoppingPlan: ShoppingPlanCartListItemData
     val title get() = category.name
 
-    fun init(shoppingPlan: ShoppingPlan, category: Category) {
+    fun init(shoppingPlan: ShoppingPlanCartListItemData, category: Category) {
         this.shoppingPlan = shoppingPlan
         this.category = category
         reloadProducts()
@@ -40,6 +40,5 @@ class ProductsViewModel(application: Application,
             repository.moveToCart(shoppingPlan, product)
             reloadProducts()
         }
-
     }
 }

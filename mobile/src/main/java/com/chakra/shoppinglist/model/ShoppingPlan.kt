@@ -57,13 +57,13 @@ data class ShoppingPlanWithCart(
                 parentColumn = "id",
                 entityColumn = "planId"
         )
-        var cart: List<ProductWithFullData>,
+        var cart: List<ProductWithFullData>?,
 
         @Relation(
                 parentColumn = "shoppingPlanTypeId",
                 entityColumn = "id"
         )
-        var planType: ShoppingPlanType
+        var planType: ShoppingPlanType?
 )
 
 data class ShoppingPlanCartListItemData(
@@ -78,7 +78,7 @@ data class ShoppingPlanCartListItemData(
                 parentColumn = "shoppingPlanTypeId",
                 entityColumn = "id"
         )
-        var planType: ShoppingPlanType
+        var planType: ShoppingPlanType?
 )
 
 /**

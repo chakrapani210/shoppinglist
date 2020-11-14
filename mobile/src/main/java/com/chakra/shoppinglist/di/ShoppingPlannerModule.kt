@@ -1,5 +1,6 @@
 package com.chakra.shoppinglist.di
 
+import com.chakra.shoppinglist.base.ShoppingPlannerActivity
 import com.chakra.shoppinglist.data.SearchImageService
 import com.chakra.shoppinglist.data.ShoppingPlanRepository
 import com.chakra.shoppinglist.database.CategoryDao
@@ -36,8 +37,11 @@ val shoppingPlannerModule: Module = module {
     }*/
     // ViewModel instance of MyViewModel
     // get() will resolve Repository instance
+    scope<ShoppingPlannerActivity> {
+        scoped<CommonViewModel> { CommonViewModel(get(), get()) }
+    }
     viewModel { AddProductViewModel(androidApplication(), get()) }
-    viewModel { CommonViewModel(androidApplication()) }
+    //viewModel { CommonViewModel(androidApplication(), get()) }
     viewModel { CreateProductViewModel(androidApplication(), get()) }
     viewModel { ManageCategoriesViewModel(androidApplication(), get()) }
     viewModel { PlanListViewModel(androidApplication(), get()) }

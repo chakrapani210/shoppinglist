@@ -8,10 +8,9 @@ import java.util.List;
 
 public class ProductsFragmentAdapter extends FragmentPagerAdapter
 {
-    private final List<ProductsFragment> fragments;
+    private final List<ProductsListFragment> fragments;
 
-    public ProductsFragmentAdapter(FragmentManager fragmentManager, List<ProductsFragment> fragments)
-    {
+    public ProductsFragmentAdapter(FragmentManager fragmentManager, List<ProductsListFragment> fragments) {
         super(fragmentManager);
 
         this.fragments = fragments;

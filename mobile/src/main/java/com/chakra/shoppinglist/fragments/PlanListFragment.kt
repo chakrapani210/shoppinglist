@@ -18,12 +18,15 @@ import com.chakra.shoppinglist.R
 import com.chakra.shoppinglist.base.BaseFragment
 import com.chakra.shoppinglist.model.ShoppingPlanCartListItemData
 import com.chakra.shoppinglist.utils.WearableService
+import com.chakra.shoppinglist.viewmodel.CommonViewModel
 import com.chakra.shoppinglist.viewmodel.PlanListViewModel
 import kotlinx.android.synthetic.main.fragment_planner_list_layout.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlanListFragment : BaseFragment() {
     private val viewModel: PlanListViewModel by viewModel()
+    private val commonViewModel: CommonViewModel by viewModel()
+
     private lateinit var adapter: PlanListAdapter
     override val resourceLayoutId: Int = R.layout.fragment_planner_list_layout
 
@@ -59,6 +62,11 @@ class PlanListFragment : BaseFragment() {
 
     override fun getTitle() = getString(R.string.shopping_plan_list_label)
 
+    override fun onStart() {
+        super.onStart()
+        commonViewModel.clearShoppingPlanSelection()
+    }
+
     inner class PlanListAdapter : RecyclerView.Adapter<ViewHolder>() {
         private var planList: List<ShoppingPlanCartListItemData>? = null
         private val imageLoader = Glide.with(context!!)
@@ -83,23 +91,22 @@ class PlanListFragment : BaseFragment() {
         var background: ImageView = view.findViewById(R.id.background)
         var checkBox: CheckBox = view.findViewById(R.id.checkBox)
         var label: TextView = view.findViewById(R.id.label)
+        var count: TextView = view.findViewById(R.id.count)
 
         fun bind(planData: ShoppingPlanCartListItemData, imageLoader: RequestManager) {
             itemView.setOnClickListener {
-                findNavController().navigate(R.id.action_planListScreen_to_shoppingCartViewScreen,
-                        ShoppingCartViewFragment.getDataBundle(planData.shoppingPlan))
+                commonViewModel.loadShoppingPlan(planData)
+                findNavController().navigate(R.id.action_planListScreen_to_shoppingCartViewScreen)
             }
-            planData.planType.image?.let {
+            planData.planType?.image?.let {
                 imageLoader.load(it).into(background)
             }
             planData.inCartProductCountData.apply {
-                if (totalItems > 0 && doneCount == totalItems) {
-                    checkBox.isChecked = true
-                    itemView.isEnabled = false
-                } else {
-                    checkBox.isChecked = false
-                    itemView.isEnabled = true
-                }
+                checkBox.isChecked = totalItems > 0 && doneCount == totalItems
+            }
+
+            planData.inCartProductCountData.let {
+                count.text = "${it.doneCount}/${it.totalItems}"
             }
 
             label.text = planData.shoppingPlan.name

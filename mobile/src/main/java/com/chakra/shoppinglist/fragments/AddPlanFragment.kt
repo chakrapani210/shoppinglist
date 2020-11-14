@@ -59,8 +59,7 @@ class AddPlanFragment : BaseFragment() {
         viewModel.shoppingPlanAddedLiveData.observe(viewLifecycleOwner) { shoppingPlan ->
             shoppingPlan?.let {
                 moveToPreviousScreen()
-                findNavController().navigate(R.id.action_planListScreen_to_shoppingCartViewScreen,
-                        ShoppingCartViewFragment.getDataBundle(shoppingPlan))
+                findNavController().navigate(R.id.action_planListScreen_to_shoppingCartViewScreen)
             }
         }
 

@@ -2,7 +2,6 @@ package com.chakra.shoppinglist.fragments
 
 import android.content.Intent
 import android.graphics.Paint
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,40 +16,22 @@ import com.bumptech.glide.RequestManager
 import com.chakra.shoppinglist.R
 import com.chakra.shoppinglist.base.BaseFragment
 import com.chakra.shoppinglist.model.ProductWithFullData
-import com.chakra.shoppinglist.model.ShoppingPlan
 import com.chakra.shoppinglist.utils.Analytics
+import com.chakra.shoppinglist.viewmodel.CommonViewModel
 import com.chakra.shoppinglist.viewmodel.ShoppingPlanViewModel
 import kotlinx.android.synthetic.main.screen_cart.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ShoppingCartViewFragment : BaseFragment() {
-    companion object {
-        const val EXTRA_SHOPPING_PLAN = "shopping_plan"
-        fun getDataBundle(shoppingPlan: ShoppingPlan) = Bundle().apply {
-            putSerializable(EXTRA_SHOPPING_PLAN, shoppingPlan)
-        }
-    }
-
     private val viewModel: ShoppingPlanViewModel by viewModel()
+    private val commonViewModel: CommonViewModel by viewModel()
+
     override val resourceLayoutId: Int
         get() = R.layout.screen_cart
 
     private lateinit var adapter: ShoppingPlanAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        if (savedInstanceState == null) {
-            viewModel.init(arguments?.getSerializable(EXTRA_SHOPPING_PLAN) as ShoppingPlan)
-        }
-    }
-
     override fun getBaseViewModel() = viewModel
-
-    override fun onStart() {
-        super.onStart()
-        viewModel.reloadProductsInPlan()
-    }
 
     override fun initialize() {
         val analytics = Analytics(requireContext())
@@ -61,7 +42,8 @@ class ShoppingCartViewFragment : BaseFragment() {
         adapter = ShoppingPlanAdapter()
         product_list.adapter = adapter
 
-        viewModel.productsInPlan.observe(viewLifecycleOwner) { planWIthCart ->
+        commonViewModel.shoppingPlanFullData.observe(viewLifecycleOwner) { planWIthCart ->
+            viewModel.init(commonViewModel.shoppingPlanCartListData.value!!)
             updateList(planWIthCart?.cart)
         }
 
@@ -93,8 +75,7 @@ class ShoppingCartViewFragment : BaseFragment() {
     }
 
     private fun onAddProduct() {
-        findNavController().navigate(R.id.action_shoppingCartViewScreen_to_addProductScreen,
-                AddProductFragment.getDataBundle(viewModel.shoppingPlan))
+        findNavController().navigate(R.id.action_shoppingCartViewScreen_to_addProductScreen)
     }
 
     private fun shareContent(products: List<ProductWithFullData>): String? {
@@ -163,7 +144,7 @@ class ShoppingCartViewFragment : BaseFragment() {
                 onProductSelected(product)
             }
             if (product.inCartProductData.selected) {
-                row.setBackgroundColor(context!!.resources.getColor(R.color.item_selected))
+                row.setBackgroundColor(context!!.resources.getColor(R.color.primary))
                 name.paintFlags = (name.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG)
                 check.visibility = View.VISIBLE
             } else {
