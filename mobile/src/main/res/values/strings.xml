@@ -13,4 +13,5 @@
     <string name="plan_type_christmas">Christmas</string>
     <string name="shopping_plan_list_label">Shopping plans</string>
     <string name="add_plan_screen_label">Add shopping plan</string>
+    <string name="choose_a_plan">Choose a plan</string>
 </resources>

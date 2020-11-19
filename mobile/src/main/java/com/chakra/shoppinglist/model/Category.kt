@@ -9,10 +9,17 @@ import java.io.Serializable
 @Entity
 class Category(var name: String,
                var image: String? = null,
-               var isTemplate: Boolean = true,
-               @field:PrimaryKey(autoGenerate = true) var id: Long? = null) : Serializable {
+               var isTemplate: Boolean = true) : Serializable {
+
+    @field:PrimaryKey(autoGenerate = true)
+    var id: Long = 0
+
+    constructor(id: Long) : this("", null, false) {
+        this.id = id
+    }
+
     companion object {
-        fun withId(id: Long) = Category("", null, false, id)
+        fun withId(id: Long) = Category(id)
     }
 
     override fun toString(): String {
@@ -40,5 +47,5 @@ data class CategoryWithProducts(
                 parentColumn = "id",
                 entityColumn = "categoryId"
         )
-        var cart: List<Product>
+        var products: List<Product>
 )

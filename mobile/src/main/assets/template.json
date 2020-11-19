@@ -1,0 +1,105 @@
+{
+  "product": "Shopping Planner",
+  "version": 1,
+  "releaseDate": "2020-11-15T00:00:00.000Z",
+  "shoppingPlanTypes": [
+    {
+      "name": "Groceries",
+      "isTemplate": true,
+      "color": "#ff8d27",
+      "image": "file:///android_asset/groceries.jpg"
+    },
+    {
+      "name": "Vegetables",
+      "isTemplate": true,
+      "color": "#46CB18",
+      "image": "file:///android_asset/vegetables.jpg"
+    },
+    {
+      "name": "Birthday",
+      "isTemplate": true,
+      "color": "#ffa500",
+      "image": "file:///android_asset/birthday.jpg"
+    },
+    {
+      "name": "Marriage",
+      "isTemplate": true,
+      "color": "#AF7AC5",
+      "image": "file:///android_asset/marriage.jpg"
+    },
+    {
+      "name": "Anniversary",
+      "isTemplate": true,
+      "color": "#D81D1D",
+      "image": "file:///android_asset/anniversary.jpg"
+    },
+    {
+      "name": "Pets",
+      "isTemplate": true,
+      "color": "#947867",
+      "image": "file:///android_asset/pets.jpg"
+    },
+    {
+      "name": "Style shopping",
+      "isTemplate": true,
+      "color": "#00022e",
+      "image": "file:///android_asset/clothes.jpg"
+    },
+    {
+      "name": "School supplies",
+      "isTemplate": true,
+      "color": "#ffa500",
+      "image": "file:///android_asset/school_supply.jpg"
+    },
+    {
+      "name": "Camping",
+      "isTemplate": true,
+      "color": "#4C4A41",
+      "image": "file:///android_asset/camping.jpg"
+    },
+    {
+      "name": "Traveling",
+      "isTemplate": true,
+      "color": "#008080",
+      "image": "file:///android_asset/traveling.jpg"
+    },
+    {
+      "name": "Todo Notes",
+      "isTemplate": true,
+      "color": "#FFDE1E",
+      "image": "file:///android_asset/stick_notes.jpg"
+    },
+    {
+      "name": "Other",
+      "isTemplate": true,
+      "color": "#02B2C9",
+      "image": "file:///android_asset/other.jpg"
+    }
+  ],
+  "categories": [
+    {
+      "name": "John Doe",
+      "isTemplate": true,
+      "image": "http://i.imgur.com/BM0GFUC.png",
+      "products": [
+        {
+          "name": "John Doe",
+          "isTemplate": true,
+          "image": "http://i.imgur.com/BM0GFUC.png"
+        }
+      ]
+    },
+    {
+      "name": "John Doe",
+      "isTemplate": true,
+      "image": "http://i.imgur.com/BM0GFUC.png",
+      "products": [
+        {
+          "name": "John Doe",
+          "isTemplate": true,
+          "image": "http://i.imgur.com/BM0GFUC.png"
+        }
+      ]
+    }
+  ]
+}

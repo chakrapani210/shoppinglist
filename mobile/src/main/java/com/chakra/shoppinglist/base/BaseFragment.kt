@@ -33,7 +33,7 @@ abstract class BaseFragment : Fragment() {
     }
 
     open fun updateTitle() {
-        (requireActivity() as ShoppingPlannerActivity).title = getTitle()
+        (requireActivity() as ShoppingPlannerActivity).supportActionBar?.title = getTitle()
     }
 
     open fun updateFloatingButton() {

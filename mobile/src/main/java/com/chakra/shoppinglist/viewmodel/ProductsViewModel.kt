@@ -6,17 +6,17 @@ import androidx.lifecycle.viewModelScope
 import com.chakra.shoppinglist.data.ShoppingPlanRepository
 import com.chakra.shoppinglist.model.Category
 import com.chakra.shoppinglist.model.Product
-import com.chakra.shoppinglist.model.ShoppingPlanCartListItemData
+import com.chakra.shoppinglist.model.ShoppingPlanWithType
 import kotlinx.coroutines.launch
 
 class ProductsViewModel(application: Application,
                         repository: ShoppingPlanRepository) : BaseViewModel(application, repository) {
     val productsLiveData = MutableLiveData<List<Product>?>()
     lateinit var category: Category
-    lateinit var shoppingPlan: ShoppingPlanCartListItemData
+    lateinit var shoppingPlan: ShoppingPlanWithType
     val title get() = category.name
 
-    fun init(shoppingPlan: ShoppingPlanCartListItemData, category: Category) {
+    fun init(shoppingPlan: ShoppingPlanWithType, category: Category) {
         this.shoppingPlan = shoppingPlan
         this.category = category
         reloadProducts()
@@ -24,13 +24,20 @@ class ProductsViewModel(application: Application,
 
     fun reloadProducts() {
         viewModelScope.launch {
-            productsLiveData.postValue(repository.getProductListForCategory(category.id!!))
+            productsLiveData.postValue(repository.getProductListForCategory(category.id))
         }
     }
 
     fun deleteProduct(product: Product) {
         viewModelScope.launch {
             repository.deleteProduct(product)
+            reloadProducts()
+        }
+    }
+
+    fun removeFromCart(product: Product) {
+        viewModelScope.launch {
+            repository.removeFromCart(shoppingPlan, product)
             reloadProducts()
         }
     }

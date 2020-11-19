@@ -1,24 +1,30 @@
 package com.chakra.shoppinglist.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager2.widget.ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT
 import com.chakra.shoppinglist.R
 import com.chakra.shoppinglist.base.BaseFragment
 import com.chakra.shoppinglist.model.Category
 import com.chakra.shoppinglist.viewmodel.AddProductViewModel
 import com.chakra.shoppinglist.viewmodel.CommonViewModel
+import com.google.android.material.tabs.TabLayout.MODE_SCROLLABLE
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.screen_add_product.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class AddProductFragment : BaseFragment(), ViewPager.OnPageChangeListener {
-    private var lastCategorySelected: String? = null
+class AddProductFragment : BaseFragment() {
+    private var lastCategorySelectedIndex: Int = 0
     private val viewModel: AddProductViewModel by viewModel()
-    private val commonViewModel: CommonViewModel by viewModel()
+    private val commonViewModel: CommonViewModel by sharedViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.e("chakra", "$viewModel  = $commonViewModel  - ${commonViewModel.shoppingPlanCartListData.value}")
         viewModel.shoppingPlan = commonViewModel.shoppingPlanCartListData.value!!
     }
 
@@ -30,8 +36,8 @@ class AddProductFragment : BaseFragment(), ViewPager.OnPageChangeListener {
     override fun getBaseViewModel() = viewModel
 
     override fun initialize() {
-        pagerHeader.drawFullUnderline = false
-        pagerHeader.tabIndicatorColor = requireContext().resources.getColor(R.color.primary)
+        /*pagerHeader.drawFullUnderline = false
+        pagerHeader.tabIndicatorColor = requireContext().resources.getColor(R.color.primary)*/
 
         viewModel.categoryList.observe(viewLifecycleOwner) {
             it?.let {
@@ -44,7 +50,7 @@ class AddProductFragment : BaseFragment(), ViewPager.OnPageChangeListener {
 
     override fun onFloatingButtonClicked() {
         findNavController().navigate(R.id.action_addProductScreen_to_createProductScreen,
-                CreateProductFragment.getDataBundle(lastCategorySelected))
+                CreateProductFragment.getDataBundle(viewModel.categoryList.value?.get(lastCategorySelectedIndex)))
     }
 
     override fun onStart() {
@@ -52,40 +58,30 @@ class AddProductFragment : BaseFragment(), ViewPager.OnPageChangeListener {
         viewModel.reloadCategories()
     }
 
-    private fun updateTabList(categories: List<Category?>) {
-        val fragments = mutableListOf<ProductsListFragment>()
-        categories.forEach {
-            it?.let {
-                val fragment = ProductsListFragment.create(it)
-                fragments.add(fragment)
-            }
+    val callBack = object : ViewPager2.OnPageChangeCallback() {
+
+        override fun onPageSelected(position: Int) {
+            super.onPageSelected(position)
+
+            lastCategorySelectedIndex = position
         }
 
-        pager.removeOnPageChangeListener(this)
+    }
+
+    private fun updateTabList(categories: List<Category>) {
+        /*pager.removeOnPageChangeListener(this)
         pager.addOnPageChangeListener(this)
-        pager.offscreenPageLimit = fragments.size
-        val adapter = ProductsFragmentAdapter(parentFragmentManager, fragments)
+        pager.offscreenPageLimit = fragments.size*/
+        pager.offscreenPageLimit = OFFSCREEN_PAGE_LIMIT_DEFAULT
+        pager.unregisterOnPageChangeCallback(callBack)
+        pager.registerOnPageChangeCallback(callBack)
+        val adapter = ProductsFragmentAdapter(this, categories)
         pager.adapter = adapter
 
-        lastCategorySelected?.let {
-            val position = categories.indexOf(Category(it))
-            pager.currentItem = position
-        }
-    }
-
-    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-    }
-
-    override fun onPageSelected(position: Int) {
-        lastCategorySelected = currentTitle(position)
-    }
-
-    override fun onPageScrollStateChanged(state: Int) {
-    }
-
-    private fun currentTitle(position: Int): String? {
-        val adapter = pager.adapter as ProductsFragmentAdapter
-        val fragment = adapter.getItem(position) as ProductsListFragment
-        return fragment.getTitle()
+        pager.currentItem = lastCategorySelectedIndex
+        pagerHeader.tabMode = MODE_SCROLLABLE
+        TabLayoutMediator(pagerHeader, pager) { tab, position ->
+            tab.text = categories[position].name
+        }.attach()
     }
 }

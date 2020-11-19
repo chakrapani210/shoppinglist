@@ -44,8 +44,8 @@ class CreateProductFragment : BaseFragment() {
             putSerializable(PARAM_PRODUCT, product)
         }
 
-        fun getDataBundle(category: String?) = Bundle().apply {
-            putString(PARAM_CATEGORY, category)
+        fun getDataBundle(category: Category?) = Bundle().apply {
+            putSerializable(PARAM_CATEGORY, category)
         }
     }
 
@@ -90,7 +90,9 @@ class CreateProductFragment : BaseFragment() {
         }
 
         buttonAction.setOnClickListener {
-            onAction(categoryId(), name(), selectedImage, productAddToCard.isChecked)
+            categoryId()?.let {
+                onAction(it, name(), selectedImage, productAddToCard.isChecked)
+            }
         }
 
         productImage.setOnClickListener {
@@ -232,7 +234,7 @@ class CreateProductFragment : BaseFragment() {
         findNavController().navigate(R.id.action_createProductScreen_to_manageCategoriesScreen)
     }
 
-    private fun onAction(categoryId: Long?, name: String, image: String, inCart: Boolean) {
+    private fun onAction(categoryId: Long, name: String, image: String, inCart: Boolean) {
         clearError()
 
         if (TextUtils.isEmpty(name)) {

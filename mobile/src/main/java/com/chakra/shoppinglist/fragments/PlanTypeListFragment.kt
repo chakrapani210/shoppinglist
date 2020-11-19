@@ -1,5 +1,6 @@
 package com.chakra.shoppinglist.fragments
 
+import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
@@ -20,19 +22,49 @@ import com.chakra.shoppinglist.R
 import com.chakra.shoppinglist.base.BaseFragment
 import com.chakra.shoppinglist.model.ShoppingPlanType
 import com.chakra.shoppinglist.utils.closeKeyBoard
+import com.chakra.shoppinglist.viewmodel.CommonViewModel
 import com.chakra.shoppinglist.viewmodel.PlanTypeListViewModel
 import kotlinx.android.synthetic.main.fragment_add_plan_layout.*
 import kotlinx.android.synthetic.main.fragment_planner_list_layout.planList
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class AddPlanFragment : BaseFragment() {
+class PlanTypeListFragment : BaseFragment() {
+    companion object {
+        private const val PLAN_LIST_COUNT_EXTRA = "plan_list_count"
+
+        fun getDataBundle(noOfPlansCount: Int) = Bundle().apply {
+            putInt(PLAN_LIST_COUNT_EXTRA, noOfPlansCount)
+        }
+    }
+
+    private var backPressCallback: OnBackPressedCallback? = null
     override val resourceLayoutId: Int
         get() = R.layout.fragment_add_plan_layout
 
     private val viewModel: PlanTypeListViewModel by viewModel()
+    private val commonViewModel: CommonViewModel by sharedViewModel()
+
     private lateinit var adapter: PlanTypeListAdapter
 
     override fun getBaseViewModel() = viewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (savedInstanceState == null) {
+            arguments?.let {
+                viewModel.noOfPlans = it.getInt(PLAN_LIST_COUNT_EXTRA)
+            }
+        }
+        if (viewModel.noOfPlans == 0) {
+            backPressCallback = object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    requireActivity().finish()
+                }
+            }
+            requireActivity().onBackPressedDispatcher.addCallback(this, backPressCallback!!)
+        }
+    }
 
     override fun initialize() {
         val layoutManager = GridLayoutManager(context, 2)
@@ -58,6 +90,8 @@ class AddPlanFragment : BaseFragment() {
 
         viewModel.shoppingPlanAddedLiveData.observe(viewLifecycleOwner) { shoppingPlan ->
             shoppingPlan?.let {
+                commonViewModel.loadShoppingPlan(it)
+                backPressCallback?.isEnabled = false
                 moveToPreviousScreen()
                 findNavController().navigate(R.id.action_planListScreen_to_shoppingCartViewScreen)
             }

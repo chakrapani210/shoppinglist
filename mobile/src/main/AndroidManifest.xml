@@ -17,13 +17,17 @@
         android:label="@string/application.name"
         android:supportsRtl="false"
         android:theme="@style/app.theme"
+        android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
 
-        <activity android:name=".base.ShoppingPlannerActivity">
+        <activity android:name=".fragments.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity android:name=".base.ShoppingPlannerActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

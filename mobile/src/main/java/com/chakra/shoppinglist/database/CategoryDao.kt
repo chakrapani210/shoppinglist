@@ -21,7 +21,7 @@ interface CategoryDao {
     fun rename(id: Long?, newName: String?)
 
     @Insert
-    fun insert(vararg categories: Category?): List<Long>?
+    fun insert(vararg categories: Category?): List<Long>
 
     @Delete
     fun delete(category: Category?)

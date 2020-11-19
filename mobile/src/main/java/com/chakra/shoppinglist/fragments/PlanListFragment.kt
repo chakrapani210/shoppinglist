@@ -6,26 +6,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.chakra.shoppinglist.R
 import com.chakra.shoppinglist.base.BaseFragment
-import com.chakra.shoppinglist.model.ShoppingPlanCartListItemData
+import com.chakra.shoppinglist.model.ShoppingPlanWithType
 import com.chakra.shoppinglist.utils.WearableService
 import com.chakra.shoppinglist.viewmodel.CommonViewModel
 import com.chakra.shoppinglist.viewmodel.PlanListViewModel
 import kotlinx.android.synthetic.main.fragment_planner_list_layout.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlanListFragment : BaseFragment() {
     private val viewModel: PlanListViewModel by viewModel()
-    private val commonViewModel: CommonViewModel by viewModel()
+    val commonViewModel: CommonViewModel by sharedViewModel()
 
     private lateinit var adapter: PlanListAdapter
     override val resourceLayoutId: Int = R.layout.fragment_planner_list_layout
@@ -38,7 +39,7 @@ class PlanListFragment : BaseFragment() {
         // TODO: start Wearable service
         //requireActivity().startService(intent)
 
-        val layoutManager = GridLayoutManager(context, 2)
+        val layoutManager = LinearLayoutManager(context)
         planList.layoutManager = layoutManager
         adapter = PlanListAdapter()
         planList.adapter = adapter
@@ -46,7 +47,7 @@ class PlanListFragment : BaseFragment() {
         viewModel.shoppingListLiveData.observe(viewLifecycleOwner) { list ->
             list?.let {
                 if (it.isEmpty()) {
-                    findNavController().navigate(R.id.action_planListScreen_to_addPlanScreen)
+                    findNavController().navigate(R.id.action_planListScreen_to_addPlanScreen, PlanTypeListFragment.getDataBundle(0))
                 } else {
                     adapter.setList(it)
                 }
@@ -60,7 +61,7 @@ class PlanListFragment : BaseFragment() {
 
     override fun isFloatingButtonEnabled() = true
 
-    override fun getTitle() = getString(R.string.shopping_plan_list_label)
+    override fun getTitle() = getString(R.string.choose_a_plan)
 
     override fun onStart() {
         super.onStart()
@@ -68,9 +69,9 @@ class PlanListFragment : BaseFragment() {
     }
 
     inner class PlanListAdapter : RecyclerView.Adapter<ViewHolder>() {
-        private var planList: List<ShoppingPlanCartListItemData>? = null
+        private var planList: List<ShoppingPlanWithType>? = null
         private val imageLoader = Glide.with(context!!)
-        fun setList(list: List<ShoppingPlanCartListItemData>?) {
+        fun setList(list: List<ShoppingPlanWithType>?) {
             this.planList = list
             notifyDataSetChanged()
         }
@@ -87,26 +88,32 @@ class PlanListFragment : BaseFragment() {
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var cardView: CardView = view.findViewById(R.id.cardView)
-        var background: ImageView = view.findViewById(R.id.background)
+        var image: ImageView = view.findViewById(R.id.image)
         var checkBox: CheckBox = view.findViewById(R.id.checkBox)
         var label: TextView = view.findViewById(R.id.label)
         var count: TextView = view.findViewById(R.id.count)
+        var progressBar: ProgressBar = view.findViewById(R.id.progressBar)
 
-        fun bind(planData: ShoppingPlanCartListItemData, imageLoader: RequestManager) {
+        fun bind(planData: ShoppingPlanWithType, imageLoader: RequestManager) {
             itemView.setOnClickListener {
                 commonViewModel.loadShoppingPlan(planData)
                 findNavController().navigate(R.id.action_planListScreen_to_shoppingCartViewScreen)
             }
             planData.planType?.image?.let {
-                imageLoader.load(it).into(background)
+                imageLoader.load(it).into(image)
             }
-            planData.inCartProductCountData.apply {
+            planData.shoppingPlan.apply {
                 checkBox.isChecked = totalItems > 0 && doneCount == totalItems
             }
 
-            planData.inCartProductCountData.let {
+            planData.shoppingPlan.let {
                 count.text = "${it.doneCount}/${it.totalItems}"
+                if (it.totalItems == 0) {
+                    progressBar.visibility = View.GONE
+                } else {
+                    progressBar.visibility = View.VISIBLE
+                    progressBar.progress = (it.doneCount * 100 / it.totalItems)
+                }
             }
 
             label.text = planData.shoppingPlan.name

@@ -15,16 +15,17 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.chakra.shoppinglist.R
 import com.chakra.shoppinglist.base.BaseFragment
-import com.chakra.shoppinglist.model.ProductWithFullData
+import com.chakra.shoppinglist.model.CartWithProduct
 import com.chakra.shoppinglist.utils.Analytics
 import com.chakra.shoppinglist.viewmodel.CommonViewModel
 import com.chakra.shoppinglist.viewmodel.ShoppingPlanViewModel
 import kotlinx.android.synthetic.main.screen_cart.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ShoppingCartViewFragment : BaseFragment() {
     private val viewModel: ShoppingPlanViewModel by viewModel()
-    private val commonViewModel: CommonViewModel by viewModel()
+    private val commonViewModel: CommonViewModel by sharedViewModel()
 
     override val resourceLayoutId: Int
         get() = R.layout.screen_cart
@@ -57,13 +58,13 @@ class ShoppingCartViewFragment : BaseFragment() {
 
     override fun getTitle() = getString(R.string.toolbar_title_main)
 
-    fun onProductSelected(product: ProductWithFullData?) {
+    fun onProductSelected(product: CartWithProduct?) {
         product?.let {
             viewModel.toggleSelection(it)
         }
     }
 
-    fun onShare(products: List<ProductWithFullData>?) {
+    fun onShare(products: List<CartWithProduct>?) {
         products?.let {
             val intent = Intent()
             intent.action = Intent.ACTION_SEND
@@ -78,7 +79,7 @@ class ShoppingCartViewFragment : BaseFragment() {
         findNavController().navigate(R.id.action_shoppingCartViewScreen_to_addProductScreen)
     }
 
-    private fun shareContent(products: List<ProductWithFullData>): String? {
+    private fun shareContent(products: List<CartWithProduct>): String? {
         val result = StringBuilder()
         var lastCategory = ""
         /*for (product in products) {
@@ -97,7 +98,7 @@ class ShoppingCartViewFragment : BaseFragment() {
     }
 
 
-    private fun updateList(products: List<ProductWithFullData>?) {
+    private fun updateList(products: List<CartWithProduct>?) {
         products?.let {
             if (it.isEmpty()) {
                 //disableToolbarAction()
@@ -114,10 +115,10 @@ class ShoppingCartViewFragment : BaseFragment() {
     }
 
     inner class ShoppingPlanAdapter : RecyclerView.Adapter<ViewHolder>() {
-        private var productsList: List<ProductWithFullData>? = null
+        private var productsList: List<CartWithProduct>? = null
         private var imageLoader = Glide.with(context!!)
 
-        fun updateList(list: List<ProductWithFullData>?) {
+        fun updateList(list: List<CartWithProduct>?) {
             this.productsList = list
             notifyDataSetChanged()
         }
@@ -139,12 +140,12 @@ class ShoppingCartViewFragment : BaseFragment() {
         var name: TextView = view.findViewById(R.id.product_name)
         var check: ImageView = view.findViewById(R.id.product_check)
 
-        fun bind(product: ProductWithFullData, imageLoader: RequestManager) {
+        fun bind(product: CartWithProduct, imageLoader: RequestManager) {
             itemView.setOnClickListener {
                 onProductSelected(product)
             }
-            if (product.inCartProductData.selected) {
-                row.setBackgroundColor(context!!.resources.getColor(R.color.primary))
+            if (product.cart.selected) {
+                row.setBackgroundColor(context!!.resources.getColor(R.color.item_selected))
                 name.paintFlags = (name.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG)
                 check.visibility = View.VISIBLE
             } else {

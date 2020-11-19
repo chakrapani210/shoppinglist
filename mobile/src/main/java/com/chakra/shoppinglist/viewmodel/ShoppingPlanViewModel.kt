@@ -3,15 +3,15 @@ package com.chakra.shoppinglist.viewmodel
 import android.app.Application
 import androidx.lifecycle.viewModelScope
 import com.chakra.shoppinglist.data.ShoppingPlanRepository
-import com.chakra.shoppinglist.model.ProductWithFullData
-import com.chakra.shoppinglist.model.ShoppingPlanCartListItemData
+import com.chakra.shoppinglist.model.CartWithProduct
+import com.chakra.shoppinglist.model.ShoppingPlanWithType
 import kotlinx.coroutines.launch
 
 class ShoppingPlanViewModel(application: Application,
                             repository: ShoppingPlanRepository) : BaseViewModel(application, repository) {
-    lateinit var shoppingPlan: ShoppingPlanCartListItemData
+    lateinit var shoppingPlan: ShoppingPlanWithType
 
-    fun init(shoppingPlan: ShoppingPlanCartListItemData) {
+    fun init(shoppingPlan: ShoppingPlanWithType) {
         this.shoppingPlan = shoppingPlan
     }
 
@@ -21,14 +21,14 @@ class ShoppingPlanViewModel(application: Application,
         }
     }*/
 
-    fun toggleSelection(product: ProductWithFullData) {
+    fun toggleSelection(product: CartWithProduct) {
         viewModelScope.launch {
             product.toggleSelection()
-            repository.updateCartItem(product.inCartProductData)
-            if (product.inCartProductData.selected) {
-                repository.updateCountOnProductDone(shoppingPlan.inCartProductCountData)
+            repository.updateCartItem(product.cart)
+            if (product.cart.selected) {
+                repository.updateCountOnProductDone(shoppingPlan.shoppingPlan)
             } else {
-                repository.updateCountOnProductUndone(shoppingPlan.inCartProductCountData)
+                repository.updateCountOnProductUndone(shoppingPlan.shoppingPlan)
             }
         }
     }

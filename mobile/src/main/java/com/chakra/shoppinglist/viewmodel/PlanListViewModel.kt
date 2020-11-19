@@ -5,6 +5,7 @@ import com.chakra.shoppinglist.data.ShoppingPlanRepository
 
 class PlanListViewModel(application: Application, repository: ShoppingPlanRepository)
     : BaseViewModel(application, repository) {
+    var autoMOveToPlanTypeListScreen = true
     val shoppingListLiveData = repository.getShoppingPlanList()
 
     /*init {

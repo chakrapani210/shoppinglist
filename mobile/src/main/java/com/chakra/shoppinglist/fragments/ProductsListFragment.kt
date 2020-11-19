@@ -21,6 +21,7 @@ import com.chakra.shoppinglist.viewmodel.CommonViewModel
 import com.chakra.shoppinglist.viewmodel.ProductsViewModel
 import com.chakra.shoppinglist.views.Dialogs
 import kotlinx.android.synthetic.main.fragment_view_category_products.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
@@ -36,6 +37,7 @@ class ProductsListFragment : BaseFragment() {
             return args
         }
 
+        @JvmStatic
         fun create(category: Category): ProductsListFragment {
             val fragment = ProductsListFragment()
             fragment.arguments = getDataBundle(category)
@@ -44,7 +46,7 @@ class ProductsListFragment : BaseFragment() {
     }
 
     private val viewModel: ProductsViewModel by viewModel()
-    private val commonViewModel: CommonViewModel by viewModel()
+    val commonViewModel: CommonViewModel by sharedViewModel()
 
     private lateinit var adapter: ProductsAdapter
 
@@ -87,12 +89,21 @@ class ProductsListFragment : BaseFragment() {
         }
     }
 
-    override fun getTitle(): String = viewModel.title
+    override fun getTitle(): String = arguments?.let {
+        (it.getSerializable(PARAM_CATEGORY) as Category).name
+    } ?: ""
 
-    fun onProductSelected(product: Product?) {
-        viewModel.moveToCart(product!!)
-        val analytics = Analytics(context)
-        analytics.cartItemAdded(product)
+    fun onProductSelected(position: Int, product: Product) {
+        if (commonViewModel.isProductAdded(product)) {
+            viewModel.removeFromCart(product)
+            commonViewModel.removeProductId(product.id)
+        } else {
+            viewModel.moveToCart(product)
+            commonViewModel.addProductId(product.id)
+            val analytics = Analytics(context)
+            analytics.cartItemAdded(product)
+        }
+        adapter.notifyItemChanged(position)
     }
 
     fun onProductsOptions(product: Product) {
@@ -141,7 +152,7 @@ class ProductsListFragment : BaseFragment() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.bind(productList!![position], imageLoader)
+            holder.bind(position, productList!![position], imageLoader)
         }
 
         override fun getItemCount() = productList?.size ?: 0
@@ -152,12 +163,12 @@ class ProductsListFragment : BaseFragment() {
         var name: TextView = view.findViewById(R.id.product_name)
         var options: View = view.findViewById(R.id.product_options)
 
-        fun bind(product: Product, imageLoader: RequestManager) {
+        fun bind(position: Int, product: Product, imageLoader: RequestManager) {
             itemView.setOnClickListener {
-                onProductSelected(product)
+                onProductSelected(position, product)
             }
             if (commonViewModel.isProductAdded(product)) {
-                itemView.setBackgroundColor(context!!.resources.getColor(R.color.primary))
+                itemView.setBackgroundColor(context!!.resources.getColor(R.color.item_selected))
             } else {
                 itemView.background = null
             }

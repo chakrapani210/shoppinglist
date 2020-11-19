@@ -6,16 +6,18 @@ import androidx.lifecycle.viewModelScope
 import com.chakra.shoppinglist.data.ShoppingPlanRepository
 import com.chakra.shoppinglist.model.ShoppingPlan
 import com.chakra.shoppinglist.model.ShoppingPlanType
+import com.chakra.shoppinglist.model.ShoppingPlanWithType
 import kotlinx.coroutines.launch
 
 class PlanTypeListViewModel(repository: ShoppingPlanRepository,
                             application: Application) : BaseViewModel(application, repository) {
+    var noOfPlans: Int = 1
     private var originalList: List<ShoppingPlanType>? = null
     val shoppingTypeSuggestions = MutableLiveData<List<ShoppingPlanType>?>()
-    val shoppingPlanAddedLiveData = MutableLiveData<ShoppingPlan>()
+    val shoppingPlanAddedLiveData = MutableLiveData<ShoppingPlanWithType>()
 
     fun filterSuggestions(searchText: String?) {
-        viewModelScope.launch() {
+        viewModelScope.launch {
             if (searchText.isNullOrEmpty()) {
                 shoppingTypeSuggestions.value = originalList
             }

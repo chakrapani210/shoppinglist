@@ -9,7 +9,11 @@ import com.chakra.shoppinglist.model.*
 interface ShoppingPlanDao {
     @Transaction
     @Query("SELECT * FROM ShoppingPlan")
-    fun all(): LiveData<List<ShoppingPlanCartListItemData>?>
+    fun all(): LiveData<List<ShoppingPlanWithType>?>
+
+    @Transaction
+    @Query("SELECT * FROM ShoppingPlan WHERE id=:id")
+    fun getShoppingPlanCartListItemData(id: Long?): ShoppingPlanWithType?
 
     @Query("SELECT EXISTS(SELECT * FROM ShoppingPlan WHERE name=:name)")
     operator fun contains(name: String?): Boolean
@@ -33,13 +37,13 @@ interface ShoppingPlanDao {
     fun getAllProductsOf(shoppingPlanId: Long?): LiveData<ShoppingPlanWithCart?>
 
     @Insert
-    fun insert(vararg inCartPlanProduct: InCartProductData): List<Long>?
+    fun insert(vararg cartPlanProduct: Cart): List<Long>?
 
     @Update
-    fun update(inCartPlanProduct: InCartProductData)
+    fun update(cartPlanProduct: Cart)
 
     @Delete
-    fun delete(inCartPlanProduct: InCartProductData)
+    fun delete(cartPlanProduct: Cart)
 
     /*** ShoppingPlanType ***/
 
@@ -55,21 +59,13 @@ interface ShoppingPlanDao {
     @Delete
     fun delete(shoppingPlanType: ShoppingPlanType)
 
-    /*** InCartProductCountData ***/
-    @Query("SELECT * FROM InCartProductCountData WHERE planId=:planId")
-    fun getInCartProductCountData(planId: Long): InCartProductCountData?
-
-    @Insert
-    fun insert(vararg inCartProductCountData: InCartProductCountData): List<Long>?
-
-    @Update
-    fun update(inCartProductCountData: InCartProductCountData)
-
-    @Delete
-    fun delete(inCartProductCountData: InCartProductCountData)
-
     @Query("SELECT * FROM ShoppingPlanType WHERE name LIKE '%' || :searchText || '%'")
     fun searchShoppingTypeList(searchText: String?): List<ShoppingPlanType>?
+
+    /** Top Product **/
+    @Transaction
+    @Query("SELECT * FROM ShoppingPlanType WHERE id=:planTypeId")
+    fun getTopProductsOf(planTypeId: Long?): ShoppingPlanTypeWithTopProducts
 
     companion object {
         fun instance(context: Context): ShoppingPlanDao {

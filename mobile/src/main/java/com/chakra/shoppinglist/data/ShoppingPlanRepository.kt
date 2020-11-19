@@ -1,6 +1,7 @@
 package com.chakra.shoppinglist.data
 
 import androidx.lifecycle.Transformations
+import com.chakra.shoppinglist.data.util.ColorUtil
 import com.chakra.shoppinglist.database.CategoryDao
 import com.chakra.shoppinglist.database.ProductDao
 import com.chakra.shoppinglist.database.ShoppingPlanDao
@@ -20,7 +21,7 @@ class ShoppingPlanRepository constructor(private val imageService: SearchImageSe
     }
 
     suspend fun getProductListForCategory(categoryId: Long) = withContext(Dispatchers.Default) {
-        val productList = categoryDao.allProductsOf(categoryId)?.cart
+        val productList = categoryDao.allProductsOf(categoryId)?.products
 
         return@withContext productList?.sortedWith(Comparator { p1: Product, p2: Product ->
             p1.name.compareTo(p2.name)
@@ -35,17 +36,21 @@ class ShoppingPlanRepository constructor(private val imageService: SearchImageSe
         productDao.delete(product)
     }
 
+    suspend fun getShoppingPlanListItemData(shoppingPlan: ShoppingPlan) = withContext(Dispatchers.Default) {
+        shoppingPlanDao.getShoppingPlanCartListItemData(shoppingPlan.id)
+    }
+
     fun getProductsInShoppingPlan(shoppingPlan: ShoppingPlan?) = Transformations.map(shoppingPlanDao.getAllProductsOf(shoppingPlan?.id)) {
         it?.apply {
             cart = sortList(cart)
         } ?: null
     }
 
-    private fun sortList(list: List<ProductWithFullData>?): List<ProductWithFullData>? {
-        return list?.sortedWith(Comparator { p1: ProductWithFullData, p2: ProductWithFullData ->
-            if (!p1.inCartProductData.selected && p2.inCartProductData.selected) {
+    private fun sortList(list: List<CartWithProduct>?): List<CartWithProduct>? {
+        return list?.sortedWith(Comparator { p1: CartWithProduct, p2: CartWithProduct ->
+            if (!p1.cart.selected && p2.cart.selected) {
                 -1
-            } else if (p1.inCartProductData.selected && !p2.inCartProductData.selected) {
+            } else if (p1.cart.selected && !p2.cart.selected) {
                 1
             } else {
                 /*if (p1.product.category != p2.product.category) {
@@ -57,16 +62,21 @@ class ShoppingPlanRepository constructor(private val imageService: SearchImageSe
         })
     }
 
-    suspend fun updateCartItem(inCartProductData: InCartProductData) = withContext(Dispatchers.Default) {
-        shoppingPlanDao.update(inCartProductData)
+    suspend fun updateCartItem(cart: Cart) = withContext(Dispatchers.Default) {
+        shoppingPlanDao.update(cart)
     }
 
-    suspend fun moveToCart(shoppingPlan: ShoppingPlanCartListItemData, product: Product, quantity: Float = 1.0f) = withContext(Dispatchers.Default) {
-        shoppingPlanDao.insert(InCartProductData(shoppingPlan.shoppingPlan.id!!, product.id!!, true, quantity))
-        updateCountOnProductUndone(shoppingPlan.inCartProductCountData)
+    suspend fun moveToCart(shoppingPlan: ShoppingPlanWithType, product: Product, quantity: Float = 1.0f) = withContext(Dispatchers.Default) {
+        shoppingPlanDao.insert(Cart(shoppingPlan.shoppingPlan.id, product.id, false, quantity))
+        updateOnProductAddedToCart(shoppingPlan.shoppingPlan)
     }
 
-    suspend fun removeFromCart(products: List<InCartProductData>) = withContext(Dispatchers.Default) {
+    suspend fun removeFromCart(shoppingPlan: ShoppingPlanWithType, product: Product) = withContext(Dispatchers.Default) {
+        shoppingPlanDao.delete(Cart(shoppingPlan.shoppingPlan.id, product.id, true, 0.0f))
+        updateOnProductRemovedFromCart(shoppingPlan.shoppingPlan)
+    }
+
+    suspend fun removeFromCart(products: List<Cart>) = withContext(Dispatchers.Default) {
         for (product in products) {
             shoppingPlanDao.delete(product)
         }
@@ -128,15 +138,18 @@ class ShoppingPlanRepository constructor(private val imageService: SearchImageSe
         imageService.searchImages(query)
     }
 
-    suspend fun createPlan(shoppingPlan: ShoppingPlan, image: String?): ShoppingPlan = withContext(Dispatchers.Default) {
-        if (shoppingPlan.shoppingPlanTypeId == null) {
-            val planTypeId = shoppingPlanDao.insert(ShoppingPlanType(null, shoppingPlan.name, false, image))
-            shoppingPlan.shoppingPlanTypeId = planTypeId?.get(0)
+    suspend fun createPlan(shoppingPlan: ShoppingPlan, image: String?): ShoppingPlanWithType? = withContext(Dispatchers.Default) {
+        if (shoppingPlan.planTypeId == null) { // User didn't select Plan type. Generate new one.
+            val planTypeIds = shoppingPlanDao.insert(ShoppingPlanType(shoppingPlan.name, ColorUtil.getRandomColor(), false, image))
+            if (planTypeIds != null) {
+                shoppingPlan.planTypeId = planTypeIds.get(0)
+            }
         }
-        shoppingPlan.id = shoppingPlanDao.insert(shoppingPlan)?.get(0)
-
-        shoppingPlanDao.insert(InCartProductCountData(shoppingPlan.id, 0, 0))
-        return@withContext shoppingPlan
+        shoppingPlanDao.insert(shoppingPlan)?.get(0)?.let {
+            shoppingPlan.id = it
+            return@withContext shoppingPlanDao.getShoppingPlanCartListItemData(shoppingPlan.id)
+        }
+        return@withContext null
     }
 
     suspend fun searchShoppingTypeList(searchText: String?)
@@ -144,19 +157,31 @@ class ShoppingPlanRepository constructor(private val imageService: SearchImageSe
         return@withContext shoppingPlanDao.searchShoppingTypeList(searchText)
     }
 
-    suspend fun updateCountOnProductDone(inCartProductCountData: InCartProductCountData) = withContext(Dispatchers.Default) {
-        inCartProductCountData.apply {
-            doneCount -= 1
-            return@withContext shoppingPlanDao.update(this)
+    suspend fun updateCountOnProductDone(shoppingPlan: ShoppingPlan) = withContext(Dispatchers.Default) {
+        shoppingPlan.apply {
+            doneCount += 1
+            return@withContext shoppingPlanDao.updateShoppingPlan(this)
         }
-        return@withContext null
     }
 
-    suspend fun updateCountOnProductUndone(inCartProductCountData: InCartProductCountData) = withContext(Dispatchers.Default) {
-        inCartProductCountData.apply {
-            doneCount += 1
-            return@withContext shoppingPlanDao.update(this)
+    suspend fun updateCountOnProductUndone(shoppingPlan: ShoppingPlan) = withContext(Dispatchers.Default) {
+        shoppingPlan.apply {
+            doneCount -= 1
+            return@withContext shoppingPlanDao.updateShoppingPlan(this)
         }
-        return@withContext null
+    }
+
+    private suspend fun updateOnProductRemovedFromCart(shoppingPlan: ShoppingPlan) = withContext(Dispatchers.Default) {
+        shoppingPlan.apply {
+            totalItems -= 1
+            return@withContext shoppingPlanDao.updateShoppingPlan(this)
+        }
+    }
+
+    private suspend fun updateOnProductAddedToCart(shoppingPlan: ShoppingPlan) = withContext(Dispatchers.Default) {
+        shoppingPlan.apply {
+            totalItems += 1
+            return@withContext shoppingPlanDao.updateShoppingPlan(this)
+        }
     }
 }

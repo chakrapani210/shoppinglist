@@ -2,34 +2,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/list.background"
     android:orientation="vertical">
 
-    <!--<include
-        layout="@layout/toolbar"/>-->
-
-    <FrameLayout
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/pagerHeader"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/list.background">
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:textColor="@color/text.color"
+        android:textSize="14sp" />
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/white">
-
-            <androidx.viewpager.widget.PagerTabStrip
-                android:id="@+id/pagerHeader"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top"
-                android:paddingBottom="15dp"
-                android:paddingTop="15dp"
-                android:textColor="@color/text.color"
-                android:textSize="14sp"/>
-
-        </androidx.viewpager.widget.ViewPager>
-
-    </FrameLayout>
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@android:color/white" />
 
 </LinearLayout>

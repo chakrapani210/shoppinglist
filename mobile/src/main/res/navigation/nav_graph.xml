@@ -18,7 +18,7 @@
 
     <fragment
         android:id="@+id/addPlanScreen"
-        android:name="com.chakra.shoppinglist.fragments.AddPlanFragment"
+        android:name="com.chakra.shoppinglist.fragments.PlanTypeListFragment"
         android:label="Blank"
         tools:layout="@layout/fragment_add_plan_layout">
         <action

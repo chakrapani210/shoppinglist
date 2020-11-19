@@ -1,36 +1,29 @@
 package com.chakra.shoppinglist.fragments;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+
+import com.chakra.shoppinglist.model.Category;
 
 import java.util.List;
 
-public class ProductsFragmentAdapter extends FragmentPagerAdapter
-{
-    private final List<ProductsListFragment> fragments;
+public class ProductsFragmentAdapter extends FragmentStateAdapter {
+    private final List<Category> categories;
 
-    public ProductsFragmentAdapter(FragmentManager fragmentManager, List<ProductsListFragment> fragments) {
-        super(fragmentManager);
+    public ProductsFragmentAdapter(Fragment fragment, List<Category> categories) {
+        super(fragment);
+        this.categories = categories;
+    }
 
-        this.fragments = fragments;
+    @NonNull
+    @Override
+    public Fragment createFragment(int position) {
+        return ProductsListFragment.create(categories.get(position));
     }
 
     @Override
-    public int getCount()
-    {
-        return fragments.size();
-    }
-
-    @Override
-    public Fragment getItem(int position)
-    {
-        return fragments.get(position);
-    }
-
-    @Override
-    public CharSequence getPageTitle(int position)
-    {
-        return fragments.get(position).getTitle().toUpperCase();
+    public int getItemCount() {
+        return categories == null ? 0 : categories.size();
     }
 }
