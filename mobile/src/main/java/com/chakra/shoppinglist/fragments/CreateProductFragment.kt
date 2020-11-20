@@ -4,6 +4,8 @@ import android.Manifest.permission
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -21,9 +23,11 @@ import com.chakra.shoppinglist.model.Product
 import com.chakra.shoppinglist.utils.ResourceUtils.fileFromUri
 import com.chakra.shoppinglist.utils.ResourceUtils.uri
 import com.chakra.shoppinglist.utils.takePictureIntent
+import com.chakra.shoppinglist.viewmodel.CommonViewModel
 import com.chakra.shoppinglist.viewmodel.CreateProductViewModel
 import com.chakra.shoppinglist.views.Dialogs
 import kotlinx.android.synthetic.main.screen_create_product.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 import kotlin.properties.Delegates
@@ -50,6 +54,7 @@ class CreateProductFragment : BaseFragment() {
     }
 
     private val viewModel: CreateProductViewModel by viewModel()
+    private val commonViewModel: CommonViewModel by sharedViewModel()
     private var isCreateNew by Delegates.notNull<Boolean>()
     private lateinit var selectedImage: String
     private var cameraUri: Uri? = null
@@ -93,6 +98,11 @@ class CreateProductFragment : BaseFragment() {
             categoryId()?.let {
                 onAction(it, name(), selectedImage, productAddToCard.isChecked)
             }
+        }
+
+        commonViewModel.color.value?.let {
+            buttonAction.setBackgroundColor(Color.parseColor(it))
+            productAddToCard.buttonTintList = ColorStateList.valueOf(Color.parseColor(it))
         }
 
         productImage.setOnClickListener {

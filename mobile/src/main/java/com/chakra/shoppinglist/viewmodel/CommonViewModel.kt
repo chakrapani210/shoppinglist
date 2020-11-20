@@ -29,6 +29,7 @@ class CommonViewModel(application: Application, repository: ShoppingPlanReposito
     }
 
     private fun generateProductIdSet(shoppingData: ShoppingPlanWithCart?) {
+        productIdSet.clear()
         shoppingData?.cart?.forEach {
             productIdSet.add(it.product.id)
         }

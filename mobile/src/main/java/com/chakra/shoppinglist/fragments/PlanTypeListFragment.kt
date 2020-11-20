@@ -1,5 +1,6 @@
 package com.chakra.shoppinglist.fragments
 
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -74,6 +75,10 @@ class PlanTypeListFragment : BaseFragment() {
 
         addButton.setOnClickListener {
             onAddPlanWithName(planNameEditText.text.toString())
+        }
+
+        commonViewModel.color.value?.let {
+            addButton.setBackgroundColor(Color.parseColor(it))
         }
 
         planNameEditText.setOnEditorActionListener { _: TextView, actionId: Int, event: KeyEvent ->
