@@ -114,7 +114,7 @@ class PlanTypeListFragment : BaseFragment() {
         })
     }
 
-    override fun getTitle() = getString(R.string.add_plan_screen_label)
+    override fun getTitle() = getString(R.string.choose_a_plan)
 
     private fun onAddPlanWithName(planName: String) {
         if (planName.isNotBlank()) {

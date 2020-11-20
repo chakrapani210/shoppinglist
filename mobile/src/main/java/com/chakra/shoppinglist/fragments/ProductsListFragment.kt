@@ -55,14 +55,6 @@ class ProductsListFragment : BaseFragment() {
 
     override fun getBaseViewModel() = viewModel
 
-    override fun updateTitle() {
-        // ignore
-    }
-
-    override fun updateFloatingButton() {
-        // ignore
-    }
-
     override fun initialize() {
         val layoutManager = LinearLayoutManager(context)
         layoutManager.orientation = LinearLayoutManager.VERTICAL

@@ -1,6 +1,6 @@
 package com.chakra.shoppinglist.base
 
-import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.observe
 import com.chakra.shoppinglist.R
+import com.chakra.shoppinglist.fragments.ProductsListFragment
 import com.chakra.shoppinglist.viewmodel.CommonViewModel
 import kotlinx.android.synthetic.main.activity_main_layout.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -26,7 +27,7 @@ class ShoppingPlannerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Log.e("chakra", "commonviewmodel: $commonViewModel")
         setContentView(R.layout.activity_main_layout)
-        setSupportActionBar(findViewById(R.id.toolbar))
+        setSupportActionBar(toolbar)
 
         floatingButton.setOnClickListener {
             currentFragment?.onFloatingButtonClicked()
@@ -36,47 +37,39 @@ class ShoppingPlannerActivity : AppCompatActivity() {
             color?.let {
                 supportActionBar?.apply {
                     val colorDrawable = ColorDrawable(Color.parseColor(it))
-                    setBackgroundDrawable(colorDrawable)
+                    //setBackgroundDrawable(colorDrawable)
+                    collapsing_layout.background = colorDrawable
+
+                    toolbar.background = ColorDrawable(Color.parseColor(it))
+                    //toolbar_layout.statusBarScrim = colorDrawable
+                    window.statusBarColor = Color.parseColor(it)
+
+                    floatingButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor(it))
                 }
             }
         }
         val fragmentManager: FragmentManager = supportFragmentManager
         fragmentManager.registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
-            override fun onFragmentAttached(fm: FragmentManager, f: Fragment, context: Context) {
-                super.onFragmentAttached(fm, f, context)
-                Log.e("chakra", "onFragmentAttached() = $f")
-            }
-
-            override fun onFragmentCreated(fm: FragmentManager, f: Fragment, savedInstanceState: Bundle?) {
-                super.onFragmentCreated(fm, f, savedInstanceState)
-                Log.e("chakra", "onFragmentCreated() = $f")
-            }
-
-            override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
-                super.onFragmentStarted(fm, f)
-                Log.e("chakra", "onFragmentStarted() = $f")
-            }
-
-            override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
-                super.onFragmentResumed(fm, f)
-                Log.e("chakra", "onFragmentResumed() = $f")
-            }
-
-            override fun onFragmentStopped(fm: FragmentManager, f: Fragment) {
-                super.onFragmentStopped(fm, f)
-                Log.e("chakra", "onFragmentStopped() = $f")
-            }
-
-            override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
-                super.onFragmentDestroyed(fm, f)
-                Log.e("chakra", "onFragmentDestroyed() = $f")
-            }
-
-            override fun onFragmentDetached(fm: FragmentManager, f: Fragment) {
-                super.onFragmentDetached(fm, f)
-                Log.e("chakra", "onFragmentDetached() = $f")
+            override fun onFragmentStarted(fm: FragmentManager, fragment: Fragment) {
+                super.onFragmentStarted(fm, fragment)
+                if (fragment !is ProductsListFragment && fragment is BaseFragment) {
+                    updateTitle(fragment)
+                    updateBackIcon(fragment)
+                    updateFloatingButton(fragment)
+                }
+                Log.e("chakra", "onFragmentStarted() = $fragment")
             }
         }, true)
+    }
+
+    open fun updateBackIcon(fragment: BaseFragment) {
+        supportActionBar?.setDisplayHomeAsUpEnabled(fragment.enableBack())
+    }
+
+    open fun updateTitle(fragment: BaseFragment) {
+        supportActionBar?.title = fragment.getTitle()
+        title = fragment.getTitle()
+        collapsing_layout.title = fragment.getTitle()
     }
 
     fun updateFloatingButton(fragment: BaseFragment) {
@@ -86,7 +79,7 @@ class ShoppingPlannerActivity : AppCompatActivity() {
         }
     }
 
-    protected fun toast(@StringRes resId: Int) {
+    private fun toast(@StringRes resId: Int) {
         Toast.makeText(this, resId, Toast.LENGTH_LONG).show()
     }
 }

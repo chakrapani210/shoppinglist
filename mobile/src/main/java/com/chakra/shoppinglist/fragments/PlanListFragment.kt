@@ -61,7 +61,9 @@ class PlanListFragment : BaseFragment() {
 
     override fun isFloatingButtonEnabled() = true
 
-    override fun getTitle() = getString(R.string.choose_a_plan)
+    override fun getTitle() = getString(R.string.shopping_plan_list_label)
+
+    override fun enableBack() = false
 
     override fun onStart() {
         super.onStart()

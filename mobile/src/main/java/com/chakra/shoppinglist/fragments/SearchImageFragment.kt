@@ -29,7 +29,7 @@ class SearchImageFragment : BaseFragment() {
 
     override fun getBaseViewModel() = viewModel
 
-    override fun getTitle() = "" // R.layout.screen_search_image
+    override fun getTitle() = getString(R.string.search_image)
 
     override val resourceLayoutId: Int
         get() = R.layout.screen_search_image

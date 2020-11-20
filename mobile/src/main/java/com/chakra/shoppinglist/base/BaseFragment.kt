@@ -26,20 +26,6 @@ abstract class BaseFragment : Fragment() {
         initialize()
     }
 
-    override fun onStart() {
-        super.onStart()
-        updateTitle()
-        updateFloatingButton()
-    }
-
-    open fun updateTitle() {
-        (requireActivity() as ShoppingPlannerActivity).supportActionBar?.title = getTitle()
-    }
-
-    open fun updateFloatingButton() {
-        (requireActivity() as ShoppingPlannerActivity).updateFloatingButton(this)
-    }
-
     protected fun toast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
@@ -105,6 +91,8 @@ abstract class BaseFragment : Fragment() {
     abstract fun getBaseViewModel(): BaseViewModel?
 
     abstract fun getTitle(): String
+
+    open fun enableBack(): Boolean = true
 
     open fun onFloatingButtonClicked() {
     }

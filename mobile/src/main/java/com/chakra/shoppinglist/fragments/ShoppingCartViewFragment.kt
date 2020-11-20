@@ -47,7 +47,6 @@ class ShoppingCartViewFragment : BaseFragment() {
             viewModel.init(commonViewModel.shoppingPlanCartListData.value!!)
             updateList(planWIthCart?.cart)
         }
-
     }
 
     override fun onFloatingButtonClicked() {
@@ -56,7 +55,8 @@ class ShoppingCartViewFragment : BaseFragment() {
 
     override fun isFloatingButtonEnabled() = true
 
-    override fun getTitle() = getString(R.string.toolbar_title_main)
+    override fun getTitle() = commonViewModel.shoppingPlanCartListData.value?.shoppingPlan?.name
+            ?: getString(R.string.toolbar_title_main)
 
     fun onProductSelected(product: CartWithProduct?) {
         product?.let {
