@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.observe
+import com.bumptech.glide.Glide
 import com.chakra.shoppinglist.R
 import com.chakra.shoppinglist.fragments.ProductsListFragment
 import com.chakra.shoppinglist.viewmodel.CommonViewModel
@@ -34,6 +35,17 @@ class ShoppingPlannerActivity : AppCompatActivity() {
             currentFragment?.onFloatingButtonClicked()
         }
 
+        commonViewModel.shoppingPlanCartListData.observe(this) { shoppingPlan ->
+            if (shoppingPlan == null) {
+                //backdrop.visibility = View.GONE
+                return@observe
+            }
+            shoppingPlan.planType?.image.let {
+                backdrop.visibility = View.VISIBLE
+                Glide.with(this).load(it).into(backdrop)
+            }
+        }
+
         commonViewModel.color.observe(this) { color ->
             color?.let {
                 supportActionBar?.apply {
@@ -42,8 +54,8 @@ class ShoppingPlannerActivity : AppCompatActivity() {
                     collapsing_layout.background = colorDrawable
 
                     toolbar.background = ColorDrawable(Color.parseColor(it))
-                    //toolbar_layout.statusBarScrim = colorDrawable
-                    window.statusBarColor = Color.parseColor(it)
+                    //collapsing_layout.statusBarScrim = colorDrawable
+                    //window.statusBarColor = Color.parseColor(it)
 
                     floatingButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor(it))
                 }
