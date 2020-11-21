@@ -24,10 +24,10 @@ android
 
         release
         {
-            keyAlias project.hasProperty('RELEASE_KEY_ALIAS') ? RELEASE_KEY_ALIAS : ''
+            /*keyAlias project.hasProperty('RELEASE_KEY_ALIAS') ? RELEASE_KEY_ALIAS : ''
             keyPassword project.hasProperty('RELEASE_KEY_PASSWORD') ? RELEASE_KEY_PASSWORD : ''
             storePassword project.hasProperty('RELEASE_STORE_PASSWORD') ? RELEASE_STORE_PASSWORD : ''
-            storeFile project.hasProperty('RELEASE_STORE_FILE') ? file(RELEASE_STORE_FILE) : file('.')
+            storeFile project.hasProperty('RELEASE_STORE_FILE') ? file(RELEASE_STORE_FILE) : file('.')*/
         }
     }
 

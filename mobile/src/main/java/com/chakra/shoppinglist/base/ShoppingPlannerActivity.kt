@@ -2,6 +2,7 @@ package com.chakra.shoppinglist.base
 
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
@@ -37,7 +38,7 @@ class ShoppingPlannerActivity : AppCompatActivity() {
 
         commonViewModel.shoppingPlanCartListData.observe(this) { shoppingPlan ->
             if (shoppingPlan == null) {
-                //backdrop.visibility = View.GONE
+                backdrop.visibility = View.GONE
                 return@observe
             }
             shoppingPlan.planType?.image.let {
@@ -50,12 +51,11 @@ class ShoppingPlannerActivity : AppCompatActivity() {
             color?.let {
                 supportActionBar?.apply {
                     val colorDrawable = ColorDrawable(Color.parseColor(it))
-                    //setBackgroundDrawable(colorDrawable)
-                    collapsing_layout.background = colorDrawable
-
-                    toolbar.background = ColorDrawable(Color.parseColor(it))
-                    //collapsing_layout.statusBarScrim = colorDrawable
-                    //window.statusBarColor = Color.parseColor(it)
+                    colorDrawable.setColorFilter(Color.parseColor("#0D000000"), PorterDuff.Mode.SRC_ATOP);
+                    collapsing_layout.statusBarScrim = colorDrawable
+                    collapsing_layout.setContentScrimColor(Color.parseColor(it))
+                    //collapsing_layout.setExpandedTitleColor(Color.parseColor(it))
+                    collapsing_layout.setBackgroundColor(Color.parseColor(it))
 
                     floatingButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor(it))
                 }
