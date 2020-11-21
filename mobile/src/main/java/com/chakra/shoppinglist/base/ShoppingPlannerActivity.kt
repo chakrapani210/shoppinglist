@@ -23,6 +23,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class ShoppingPlannerActivity : AppCompatActivity() {
+    companion object {
+        const val SHADOW_COLOR_TO_STATUS_BAR = "#0D000000"
+    }
     private var currentFragment: BaseFragment? = null
     val commonViewModel: CommonViewModel by viewModel()
 
@@ -51,8 +54,9 @@ class ShoppingPlannerActivity : AppCompatActivity() {
             color?.let {
                 supportActionBar?.apply {
                     val colorDrawable = ColorDrawable(Color.parseColor(it))
-                    colorDrawable.setColorFilter(Color.parseColor("#0D000000"), PorterDuff.Mode.SRC_ATOP);
+                    colorDrawable.setColorFilter(Color.parseColor(SHADOW_COLOR_TO_STATUS_BAR), PorterDuff.Mode.SRC_ATOP);
                     collapsing_layout.statusBarScrim = colorDrawable
+
                     collapsing_layout.setContentScrimColor(Color.parseColor(it))
                     //collapsing_layout.setExpandedTitleColor(Color.parseColor(it))
                     collapsing_layout.setBackgroundColor(Color.parseColor(it))
