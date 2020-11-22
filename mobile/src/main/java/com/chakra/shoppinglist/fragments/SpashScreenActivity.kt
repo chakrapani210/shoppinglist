@@ -11,16 +11,13 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.chakra.shoppinglist.R
 import com.chakra.shoppinglist.base.ShoppingPlannerActivity
+import com.chakra.shoppinglist.database.AppDatabase
 import com.chakra.shoppinglist.tasks.migration.Migration
 import kotlinx.android.synthetic.main.activity_splash_screen_layout.*
 
 class SplashScreenActivity : AppCompatActivity(), Migration.OnMigrationDone {
-    companion object {
-        private const val FIELD_MIGRATION_DONE = "migration.done"
-    }
-
-    private fun isMigrationDone() = getPreferences(Activity.MODE_PRIVATE).getBoolean(FIELD_MIGRATION_DONE, false)
-    private fun setMigrationDone() = getPreferences(Activity.MODE_PRIVATE).edit().putBoolean(FIELD_MIGRATION_DONE, true).commit()
+    private fun isMigrationDone() = getSharedPreferences(AppDatabase.DATABASE_INIT_PREF, Activity.MODE_PRIVATE)
+            .getBoolean(AppDatabase.FIELD_MIGRATION_DONE, false)
     private val handler = Handler(Looper.getMainLooper())
 
     public override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +34,6 @@ class SplashScreenActivity : AppCompatActivity(), Migration.OnMigrationDone {
             progress.visibility = View.VISIBLE
             val migration = Migration(this, this)
             migration.execute()
-            setMigrationDone()
         } else {
             onMigrationDone()
         }

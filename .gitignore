@@ -7,3 +7,4 @@ gradle.properties
 /common/build
 /wear/build
 /build
+/mobile/release/

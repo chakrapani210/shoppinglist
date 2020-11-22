@@ -1,5 +1,6 @@
 package com.chakra.shoppinglist.database
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.AssetManager
 import android.util.Log
@@ -9,6 +10,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.chakra.shoppinglist.R
+import com.chakra.shoppinglist.fragments.SplashScreenActivity
 import com.chakra.shoppinglist.model.*
 import com.google.gson.Gson
 import java.io.IOException
@@ -27,12 +29,16 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun shoppingPlanDao(): ShoppingPlanDao
 
     fun initialize(context: Context) {
+        Log.d("chakra", "Database init() called")
         val jsonData = readTemplateData(context)
+        Log.d("chakra", "Template json: " + jsonData)
         val gson = Gson()
         val templateData = gson.fromJson(jsonData, TemplateData::class.java)
         templateData.shoppingPlanTypes.forEach {
             shoppingPlanDao().insert(it)
         }
+
+        Log.d("chakra", "shopping plan types added")
 
         val categoryDao = categoryDao()
         val bathroom = Category(context.getString(R.string.category_bathroom), null, true)
@@ -113,7 +119,11 @@ abstract class AppDatabase : RoomDatabase() {
                 chicken, fish, meat, tuna,  // Milk & Cheese
                 cheese, eggs, milk, yogurt)
         Log.d(TAG, "product ID's: $ids")
+
+        setMigrationDone(context)
     }
+
+    private fun setMigrationDone(context: Context) = context.getSharedPreferences(DATABASE_INIT_PREF, Activity.MODE_PRIVATE).edit().putBoolean(FIELD_MIGRATION_DONE, true).commit()
 
     private fun readTemplateData(context: Context): String {
         val assetManager: AssetManager = context.assets
@@ -136,6 +146,8 @@ abstract class AppDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: AppDatabase? = null
         const val TAG: String = "AppDatabase"
+        const val DATABASE_INIT_PREF = "data_base_init_pref"
+        const val FIELD_MIGRATION_DONE = "migration.done"
 
         @JvmStatic
         fun instance(context: Context): AppDatabase {

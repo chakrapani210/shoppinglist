@@ -2,16 +2,17 @@ package com.chakra.shoppinglist.model
 
 import android.os.Parcelable
 import androidx.room.*
+import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 import java.io.Serializable
 import java.util.*
 
 @Entity
 @Parcelize
-data class ShoppingPlanType(var name: String,
-                            var color: String,
-                            var isTemplate: Boolean,
-                            var image: String?) : Parcelable {
+data class ShoppingPlanType(@SerializedName("name") var name: String,
+                            @SerializedName("color") var color: String,
+                            @SerializedName("isTemplate") var isTemplate: Boolean,
+                            @SerializedName("image") var image: String?) : Parcelable {
     @field:PrimaryKey(autoGenerate = true)
     var id: Long = 0
 }
