@@ -1,11 +1,11 @@
 package com.chakra.shoppinglist.fragments
 
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.compose.ui.viewinterop.viewModel
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,38 +14,19 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.chakra.shoppinglist.R
 import com.chakra.shoppinglist.base.BaseFragment
-import com.chakra.shoppinglist.model.Category
-import com.chakra.shoppinglist.model.Product
+import com.chakra.shoppinglist.model.*
 import com.chakra.shoppinglist.utils.Analytics
 import com.chakra.shoppinglist.viewmodel.CommonViewModel
-import com.chakra.shoppinglist.viewmodel.ProductsViewModel
+import com.chakra.shoppinglist.viewmodel.RecentProductsViewModel
+import com.chakra.shoppinglist.viewmodel.TopProductsViewModel
 import com.chakra.shoppinglist.views.Dialogs
 import kotlinx.android.synthetic.main.fragment_view_category_products.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
-class ProductsListFragment : BaseFragment() {
-
-    companion object {
-        private const val PARAM_CATEGORY = "category"
-        private const val PARAM_SHOPPING_PLAN = "shopping_plan"
-
-        fun getDataBundle(category: Category): Bundle {
-            val args = Bundle()
-            args.putSerializable(PARAM_CATEGORY, category)
-            return args
-        }
-
-        @JvmStatic
-        fun create(category: Category): ProductsListFragment {
-            val fragment = ProductsListFragment()
-            fragment.arguments = getDataBundle(category)
-            return fragment
-        }
-    }
-
-    private val viewModel: ProductsViewModel by viewModel()
+class RecentProductListFragment : BaseFragment() {
+    private val viewModelTop: RecentProductsViewModel by viewModel()
     val commonViewModel: CommonViewModel by sharedViewModel()
 
     private lateinit var adapter: ProductsAdapter
@@ -53,44 +34,40 @@ class ProductsListFragment : BaseFragment() {
     override val resourceLayoutId: Int
         get() = R.layout.fragment_view_category_products
 
-    override fun getBaseViewModel() = viewModel
+    override fun getBaseViewModel() = viewModelTop
 
     override fun initialize() {
+        arguments?.let {
+            viewModelTop.init(commonViewModel.shoppingPlanCartListData.value!!)
+        }
         val layoutManager = LinearLayoutManager(context)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         productList.layoutManager = layoutManager
         adapter = ProductsAdapter()
         productList.adapter = adapter
 
-        viewModel.productsLiveData.observe(viewLifecycleOwner) { list: List<Product>? ->
-            if (list.isNullOrEmpty()) {
-                productList.visibility = View.GONE
-                labelEmpty.visibility = View.VISIBLE
-            } else {
-                productList.visibility = View.VISIBLE
-                labelEmpty.visibility = View.GONE
-                adapter.setList(list)
+        viewModelTop.productsLiveData.observe(viewLifecycleOwner) { topProducts ->
+            topProducts?.let {
+                if (it.recents.isNullOrEmpty()) {
+                    productList.visibility = View.GONE
+                    labelEmpty.visibility = View.VISIBLE
+                } else {
+                    productList.visibility = View.VISIBLE
+                    labelEmpty.visibility = View.GONE
+                    adapter.setList(it.recents)
+                }
             }
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        arguments?.let {
-            viewModel.init(commonViewModel.shoppingPlanCartListData.value!!, it.getSerializable(PARAM_CATEGORY) as Category)
-        }
-    }
-
-    override fun getTitle(): String = arguments?.let {
-        (it.getSerializable(PARAM_CATEGORY) as Category).name
-    } ?: ""
+    override fun getTitle(): String = ""
 
     fun onProductSelected(position: Int, product: Product) {
         if (commonViewModel.isProductAdded(product)) {
-            viewModel.removeFromCart(product)
+            viewModelTop.removeFromCart(product)
             commonViewModel.removeProductId(product.id)
         } else {
-            viewModel.moveToCart(product)
+            viewModelTop.moveToCart(product)
             commonViewModel.addProductId(product.id)
             val analytics = Analytics(context)
             analytics.cartItemAdded(product)
@@ -126,15 +103,15 @@ class ProductsListFragment : BaseFragment() {
     }
 
     private fun removeProduct(product: Product) {
-        viewModel.deleteProduct(product)
+        viewModelTop.deleteProduct(product)
     }
 
     inner class ProductsAdapter : RecyclerView.Adapter<ViewHolder>() {
         private var imageLoader: RequestManager = Glide.with(context!!)
 
-        private var productList: List<Product>? = null
+        private var productList: List<RecentProductsInfo>? = null
 
-        fun setList(list: List<Product>?) {
+        fun setList(list: List<RecentProductsInfo>) {
             this.productList = list
             notifyDataSetChanged()
         }
@@ -155,18 +132,18 @@ class ProductsListFragment : BaseFragment() {
         var name: TextView = view.findViewById(R.id.product_name)
         var options: View = view.findViewById(R.id.product_options)
 
-        fun bind(position: Int, product: Product, imageLoader: RequestManager) {
+        fun bind(position: Int, product: RecentProductsInfo, imageLoader: RequestManager) {
             itemView.setOnClickListener {
-                onProductSelected(position, product)
+                onProductSelected(position, product.product)
             }
-            if (commonViewModel.isProductAdded(product)) {
+            if (commonViewModel.isProductAdded(product.product)) {
                 itemView.setBackgroundColor(context!!.resources.getColor(R.color.item_selected))
             } else {
                 itemView.background = null
             }
-            name.text = product.name
-            imageLoader.load(product.image).into(image)
-            options.setOnClickListener { v: View? -> onProductsOptions(product) }
+            name.text = product.product.name
+            imageLoader.load(product.product.image).into(image)
+            options.setOnClickListener { v: View? -> onProductsOptions(product.product) }
         }
     }
 }

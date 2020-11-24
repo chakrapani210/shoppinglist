@@ -8,6 +8,8 @@ import com.chakra.shoppinglist.database.ShoppingPlanDao
 import com.chakra.shoppinglist.model.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.*
+import kotlin.Comparator
 
 class ShoppingPlanRepository constructor(private val imageService: SearchImageService,
                                          private val shoppingPlanDao: ShoppingPlanDao,
@@ -27,6 +29,8 @@ class ShoppingPlanRepository constructor(private val imageService: SearchImageSe
             p1.name.compareTo(p2.name)
         })
     }
+
+    fun getCategoriesWithProducts() = categoryDao.allCategoriesWithProducts()
 
     suspend fun getProductByNameList(name: String) = withContext(Dispatchers.Default) {
         productDao.byName(name)
@@ -183,5 +187,26 @@ class ShoppingPlanRepository constructor(private val imageService: SearchImageSe
             totalItems += 1
             return@withContext shoppingPlanDao.updateShoppingPlan(this)
         }
+    }
+
+    suspend fun getRecents(planTypeId: Long) = withContext(Dispatchers.Default) {
+        return@withContext categoryDao.getRecents(planTypeId)
+    }
+
+    suspend fun insertRecentSelection(planTypeId: Long, productId: Long) = withContext(Dispatchers.Default) {
+        var recentProduct = categoryDao.getRecentSelection(planTypeId, productId)
+        if (recentProduct == null) {
+            recentProduct = RecentProduct(planTypeId, productId, 1, Calendar.getInstance())
+            return@withContext categoryDao.insertRecentProduct(recentProduct)
+        } else {
+            recentProduct.apply {
+                frequency += 1
+            }
+            return@withContext categoryDao.updateRecentProduct(recentProduct)
+        }
+    }
+
+    suspend fun getTopProducts(planTypeId: Long) = withContext(Dispatchers.Default) {
+        return@withContext shoppingPlanDao.getTopProductsOf(planTypeId)
     }
 }

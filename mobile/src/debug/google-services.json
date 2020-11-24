@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "320596874382",
+    "firebase_url": "https://shopping-planner-4cadf.firebaseio.com",
+    "project_id": "shopping-planner-4cadf",
+    "storage_bucket": "shopping-planner-4cadf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:320596874382:android:950088ba05f59bcfc625df",
+        "android_client_info": {
+          "package_name": "com.chakra.shoppinglist.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "320596874382-h4n251h1khlvr2hk9f6hk3apbonf0n6p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwtEdd3DLtt_EIAcKc3k1DyRZ1iVpzbCI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "320596874382-h4n251h1khlvr2hk9f6hk3apbonf0n6p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:320596874382:android:5a8fbdf4ffc188b3c625df",
+        "android_client_info": {
+          "package_name": "com.chakra.shoppinglist.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "320596874382-h4n251h1khlvr2hk9f6hk3apbonf0n6p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwtEdd3DLtt_EIAcKc3k1DyRZ1iVpzbCI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "320596874382-h4n251h1khlvr2hk9f6hk3apbonf0n6p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

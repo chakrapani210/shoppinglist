@@ -50,9 +50,9 @@ data class Cart(var planId: Long,
     ForeignKey(entity = ShoppingPlanType::class, parentColumns = ["id"], childColumns = ["planTypeId"], onDelete = ForeignKey.CASCADE),
     ForeignKey(entity = Product::class, parentColumns = ["id"], childColumns = ["productId"], onDelete = ForeignKey.CASCADE)
 ])
-data class TopProducts(var planTypeId: Long?,
-                       var productId: Int,
-                       var count: Int) {
+data class TopProduct(var planTypeId: Long?,
+                      var productId: Int,
+                      var count: Int) {
     @field:PrimaryKey(autoGenerate = true)
     var id: Long = 0
 }
@@ -71,7 +71,7 @@ data class CartWithProduct(
 }
 
 data class TopProductsInfo(
-        @Embedded var topProducts: TopProducts,
+        @Embedded var topProducts: TopProduct,
 
         @Relation(
                 parentColumn = "productId",
@@ -82,7 +82,7 @@ data class TopProductsInfo(
 data class ShoppingPlanTypeWithTopProducts(
         @Embedded var planType: ShoppingPlanType,
         @Relation(
-                entity = TopProducts::class,
+                entity = TopProduct::class,
                 parentColumn = "id",
                 entityColumn = "planTypeId")
         var topProductBucket: List<TopProductsInfo>?
@@ -108,7 +108,7 @@ data class ShoppingPlanWithType(
         @Relation(
                 parentColumn = "planTypeId",
                 entityColumn = "id")
-        var planType: ShoppingPlanType?
+        var planType: ShoppingPlanType
 )
 
 /**

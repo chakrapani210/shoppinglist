@@ -1,5 +1,6 @@
 package com.chakra.shoppinglist.di
 
+import com.bumptech.glide.Glide
 import com.chakra.shoppinglist.data.SearchImageService
 import com.chakra.shoppinglist.data.ShoppingPlanRepository
 import com.chakra.shoppinglist.database.CategoryDao
@@ -22,6 +23,7 @@ val shoppingPlannerModule: Module = module {
 
     // = OkHttpClient()
     single { OkHttpClient() }
+    single { Glide.with(androidContext()) }
 
     // Serivce
     single { SearchImageService(get()) }
@@ -45,8 +47,9 @@ val shoppingPlannerModule: Module = module {
     viewModel { ManageCategoriesViewModel(androidApplication(), get()) }
     viewModel { PlanListViewModel(androidApplication(), get()) }
     viewModel { PlanTypeListViewModel(get(), androidApplication()) }
-    viewModel { ProductsViewModel(androidApplication(), get()) }
+    viewModel { TopProductsViewModel(androidApplication(), get()) }
     viewModel { SearchViewModel(androidApplication(), get()) }
     viewModel { ShoppingPlanViewModel(androidApplication(), get()) }
-
+    viewModel { CategoriesViewModel(androidApplication(), get()) }
+    viewModel { RecentProductsViewModel(androidApplication(), get()) }
 }

@@ -3,8 +3,7 @@ package com.chakra.shoppinglist.database
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.chakra.shoppinglist.model.Category
-import com.chakra.shoppinglist.model.CategoryWithProducts
+import com.chakra.shoppinglist.model.*
 
 @Dao
 interface CategoryDao {
@@ -21,7 +20,7 @@ interface CategoryDao {
     fun rename(id: Long?, newName: String?)
 
     @Insert
-    fun insert(vararg categories: Category?): List<Long>
+    fun insert(vararg categories: Category): List<Long>
 
     @Delete
     fun delete(category: Category?)
@@ -29,6 +28,24 @@ interface CategoryDao {
     @Transaction
     @Query("SELECT * FROM Category WHERE id=:categoryId")
     fun allProductsOf(categoryId: Long): CategoryWithProducts?
+
+    @Transaction
+    @Query("SELECT * FROM Category")
+    fun allCategoriesWithProducts(): LiveData<List<CategoryWithProducts>?>
+
+    // Recents
+    @Insert
+    fun insertRecentProduct(recentSelection: RecentProduct)
+
+    @Update
+    fun updateRecentProduct(recentSelection: RecentProduct)
+
+    @Query("SELECT * FROM RecentProduct WHERE planTypeId=:planTypeId AND productId=:productId")
+    fun getRecentSelection(planTypeId: Long, productId: Long): RecentProduct
+
+    @Transaction
+    @Query("SELECT * FROM ShoppingPlanType WHERE id=:planTypeId")
+    fun getRecents(planTypeId: Long): ShoppingPlanTypeWithRecentProducts
 
     companion object {
         fun instance(context: Context): CategoryDao {

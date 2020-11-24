@@ -16,7 +16,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.observe
 import com.bumptech.glide.Glide
 import com.chakra.shoppinglist.R
-import com.chakra.shoppinglist.fragments.ProductsListFragment
+import com.chakra.shoppinglist.fragments.TopProductListFragment
 import com.chakra.shoppinglist.viewmodel.CommonViewModel
 import kotlinx.android.synthetic.main.activity_main_layout.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -69,7 +69,7 @@ class ShoppingPlannerActivity : AppCompatActivity() {
         fragmentManager.registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
             override fun onFragmentStarted(fm: FragmentManager, fragment: Fragment) {
                 super.onFragmentStarted(fm, fragment)
-                if (fragment !is ProductsListFragment && fragment is BaseFragment) {
+                if (fragment !is TopProductListFragment && fragment is BaseFragment) {
                     updateTitle(fragment)
                     updateBackIcon(fragment)
                     updateFloatingButton(fragment)

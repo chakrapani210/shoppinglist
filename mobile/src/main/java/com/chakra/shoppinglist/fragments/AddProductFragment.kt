@@ -9,6 +9,7 @@ import androidx.viewpager2.widget.ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT
 import com.chakra.shoppinglist.R
 import com.chakra.shoppinglist.base.BaseFragment
 import com.chakra.shoppinglist.model.Category
+import com.chakra.shoppinglist.model.ShoppingPlanTypeWithRecentProducts
 import com.chakra.shoppinglist.viewmodel.AddProductViewModel
 import com.chakra.shoppinglist.viewmodel.CommonViewModel
 import com.google.android.material.tabs.TabLayout.MODE_SCROLLABLE
@@ -25,7 +26,10 @@ class AddProductFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.e("chakra", "$viewModel  = $commonViewModel  - ${commonViewModel.shoppingPlanCartListData.value}")
-        viewModel.shoppingPlan = commonViewModel.shoppingPlanCartListData.value!!
+        if (savedInstanceState == null) {
+            viewModel.init(commonViewModel.shoppingPlanCartListData.value!!)
+            viewModel.loadRecentProducts()
+        }
     }
 
     override fun getTitle(): String = getString(R.string.toolbar_title_add_product)
@@ -39,11 +43,10 @@ class AddProductFragment : BaseFragment() {
         /*pagerHeader.drawFullUnderline = false
         pagerHeader.tabIndicatorColor = requireContext().resources.getColor(R.color.primary)*/
 
-        viewModel.categoryList.observe(viewLifecycleOwner) {
-            it?.let {
-                updateTabList(it)
-            }
+        viewModel.recentProductsLiveData.observe(viewLifecycleOwner) {
+            updateTabList(it)
         }
+
     }
 
     override fun isFloatingButtonEnabled() = true
@@ -68,20 +71,21 @@ class AddProductFragment : BaseFragment() {
 
     }
 
-    private fun updateTabList(categories: List<Category>) {
-        /*pager.removeOnPageChangeListener(this)
-        pager.addOnPageChangeListener(this)
-        pager.offscreenPageLimit = fragments.size*/
+    private fun updateTabList(recentProducts: ShoppingPlanTypeWithRecentProducts?) {
         pager.offscreenPageLimit = OFFSCREEN_PAGE_LIMIT_DEFAULT
         pager.unregisterOnPageChangeCallback(callBack)
         pager.registerOnPageChangeCallback(callBack)
-        val adapter = ProductsFragmentAdapter(this, categories)
+        val showRecentProducts = recentProducts?.let {
+            !it.recents.isNullOrEmpty()
+        } ?: false
+
+        val adapter = ProductsFragmentAdapter(this, showRecentProducts)
         pager.adapter = adapter
 
         pager.currentItem = lastCategorySelectedIndex
         pagerHeader.tabMode = MODE_SCROLLABLE
         TabLayoutMediator(pagerHeader, pager) { tab, position ->
-            tab.text = categories[position].name
+            tab.text = adapter.getTitle(position)
         }.attach()
     }
 }

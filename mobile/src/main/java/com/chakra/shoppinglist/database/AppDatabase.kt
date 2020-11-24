@@ -10,7 +10,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.chakra.shoppinglist.R
-import com.chakra.shoppinglist.fragments.SplashScreenActivity
 import com.chakra.shoppinglist.model.*
 import com.google.gson.Gson
 import java.io.IOException
@@ -20,7 +19,8 @@ import java.io.IOException
     ShoppingPlan::class,
     ShoppingPlanType::class,
     Cart::class,
-    TopProducts::class,
+    TopProduct::class,
+    RecentProduct::class,
     Category::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
